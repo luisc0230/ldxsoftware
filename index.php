@@ -15,7 +15,173 @@ require_once __DIR__ . '/config/config.php';
 
 // SOLUCIÓN ALTERNATIVA: Detectar parámetro fix_session
 if (isset($_GET['fix_session']) && $_GET['fix_session'] == '1') {
-    require_once __DIR__ . '/fix-session.php';
+    // Código inline para arreglar sesión sin necesidad de archivo externo
+    ?>
+    <!DOCTYPE html>
+    <html><head><meta charset="UTF-8"><title>Arreglar Sesión</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #1a1a1a; color: #fff; max-width: 900px; margin: 0 auto; }
+        .box { background: #2a2a2a; padding: 20px; margin: 15px 0; border-radius: 8px; border-left: 5px solid #4caf50; }
+        .error { border-left-color: #f44336; }
+        .warning { border-left-color: #ff9800; }
+        pre { background: #000; padding: 15px; overflow-x: auto; border-radius: 5px; }
+        .success { color: #4caf50; font-weight: bold; }
+        .fail { color: #f44336; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+        td { padding: 8px; border-bottom: 1px solid #444; }
+        td:first-child { font-weight: bold; width: 200px; }
+    </style>
+    </head><body>
+    <h1 style="color: #4caf50;">🔧 Arreglar Sesión y BD</h1>
+    
+    <?php
+    echo '<div class="box"><h2>📊 Estado Actual</h2>';
+    
+    // Verificar sesión
+    echo '<h3>1️⃣ Sesión PHP</h3><table>';
+    echo '<tr><td>Session ID:</td><td>' . session_id() . '</td></tr>';
+    echo '<tr><td>Usuario en sesión:</td><td>' . (isset($_SESSION['user']) ? '✅ SI' : '❌ NO') . '</td></tr>';
+    
+    if (isset($_SESSION['user'])) {
+        echo '<tr><td>Email:</td><td>' . htmlspecialchars($_SESSION['user']['email'] ?? 'N/A') . '</td></tr>';
+        echo '<tr><td>Nombre:</td><td>' . htmlspecialchars($_SESSION['user']['name'] ?? 'N/A') . '</td></tr>';
+        
+        $userId = $_SESSION['user']['id'] ?? null;
+        $isNumericId = is_numeric($userId) && $userId < 1000000000;
+        
+        if ($isNumericId) {
+            echo '<tr><td>ID en sesión:</td><td class="success">' . $userId . ' ✅ (ID de BD)</td></tr>';
+        } else {
+            echo '<tr><td>ID en sesión:</td><td class="fail">' . htmlspecialchars($userId) . ' ❌ (Google ID)</td></tr>';
+        }
+    }
+    echo '</table></div>';
+    
+    // Test BD
+    echo '<div class="box"><h3>2️⃣ Conexión a Base de Datos</h3>';
+    try {
+        require_once __DIR__ . '/app/models/Database.php';
+        $db = Database::getInstance()->getConnection();
+        
+        echo '<p class="success">✅ Conexión exitosa</p>';
+        
+        // Verificar tabla usuarios
+        $result = $db->query("SHOW TABLES LIKE 'usuarios'");
+        if ($result && $result->num_rows > 0) {
+            echo '<p class="success">✅ Tabla usuarios existe</p>';
+            
+            $result = $db->query("SELECT COUNT(*) as total FROM usuarios");
+            $row = $result->fetch_assoc();
+            echo '<p>Total usuarios en BD: <strong>' . $row['total'] . '</strong></p>';
+        } else {
+            echo '<p class="fail">❌ Tabla usuarios NO existe. Ejecuta database/schema.sql en phpMyAdmin</p>';
+        }
+        
+    } catch (Exception $e) {
+        echo '<p class="fail">❌ Error de conexión: ' . htmlspecialchars($e->getMessage()) . '</p>';
+    }
+    echo '</div>';
+    
+    // Intentar guardar usuario
+    if (isset($_SESSION['user']) && isset($db)) {
+        echo '<div class="box warning"><h3>3️⃣ Guardar Usuario en BD</h3>';
+        
+        try {
+            require_once __DIR__ . '/app/models/Usuario.php';
+            
+            $googleId = $_SESSION['user']['google_id'] ?? $_SESSION['user']['id'];
+            $email = $_SESSION['user']['email'];
+            $nombre = $_SESSION['user']['name'];
+            $foto = $_SESSION['user']['picture'] ?? '';
+            
+            echo '<p><strong>Datos del usuario:</strong></p>';
+            echo '<table>';
+            echo '<tr><td>Google ID:</td><td>' . htmlspecialchars($googleId) . '</td></tr>';
+            echo '<tr><td>Email:</td><td>' . htmlspecialchars($email) . '</td></tr>';
+            echo '<tr><td>Nombre:</td><td>' . htmlspecialchars($nombre) . '</td></tr>';
+            echo '</table>';
+            
+            // Verificar si existe
+            $stmt = $db->prepare("SELECT id, google_id, email FROM usuarios WHERE google_id = ? OR email = ?");
+            $stmt->bind_param("ss", $googleId, $email);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            if ($result->num_rows > 0) {
+                $userInDb = $result->fetch_assoc();
+                echo '<p class="success">✅ Usuario YA existe en la BD (ID: ' . $userInDb['id'] . ')</p>';
+                
+                // Actualizar sesión
+                if ($_SESSION['user']['id'] != $userInDb['id']) {
+                    echo '<p class="warning">⚠️ Corrigiendo ID en sesión...</p>';
+                    $_SESSION['user']['id'] = $userInDb['id'];
+                    $_SESSION['user']['google_id'] = $userInDb['google_id'];
+                    echo '<p class="success">✅ Sesión actualizada con ID: ' . $userInDb['id'] . '</p>';
+                }
+            } else {
+                echo '<p class="warning">⚠️ Usuario NO existe en BD. Insertando...</p>';
+                
+                $stmt = $db->prepare("INSERT INTO usuarios (google_id, email, nombre, foto, fecha_registro, ultimo_login) VALUES (?, ?, ?, ?, NOW(), NOW())");
+                $stmt->bind_param("ssss", $googleId, $email, $nombre, $foto);
+                
+                if ($stmt->execute()) {
+                    $newId = $db->insert_id;
+                    echo '<p class="success">✅ Usuario insertado con ID: ' . $newId . '</p>';
+                    
+                    $_SESSION['user']['id'] = $newId;
+                    $_SESSION['user']['google_id'] = $googleId;
+                    
+                    echo '<p class="success">✅ Sesión actualizada</p>';
+                } else {
+                    echo '<p class="fail">❌ Error al insertar: ' . $stmt->error . '</p>';
+                }
+            }
+            
+        } catch (Exception $e) {
+            echo '<p class="fail">❌ Excepción: ' . htmlspecialchars($e->getMessage()) . '</p>';
+        }
+        
+        echo '</div>';
+        
+        // Mostrar sesión final
+        echo '<div class="box"><h3>4️⃣ Sesión Actualizada</h3><pre>';
+        print_r($_SESSION['user']);
+        echo '</pre></div>';
+    }
+    
+    // Acciones
+    echo '<div class="box"><h2>🎯 Próximos Pasos</h2>';
+    
+    if (isset($_SESSION['user'])) {
+        $userId = $_SESSION['user']['id'] ?? null;
+        $isFixed = is_numeric($userId) && $userId < 1000000000;
+        
+        if ($isFixed) {
+            echo '<p class="success">✅ ¡PROBLEMA RESUELTO!</p>';
+            echo '<p>Tu sesión ahora tiene el ID correcto de la base de datos.</p>';
+            echo '<p><a href="' . BASE_URL . '" style="display:inline-block; background:#4caf50; color:white; padding:10px 20px; text-decoration:none; border-radius:5px;">Ir al Inicio</a></p>';
+            echo '<p>Ahora intenta suscribirte a un plan. Ya NO debería aparecer el modal de login.</p>';
+        } else {
+            echo '<p class="warning">⚠️ El problema persiste</p>';
+            echo '<p>Intenta:</p><ol>';
+            echo '<li><a href="' . BASE_URL . 'auth/logout">Cerrar sesión</a></li>';
+            echo '<li><a href="' . BASE_URL . 'auth/google">Iniciar sesión de nuevo</a></li>';
+            echo '<li><a href="' . BASE_URL . '?fix_session=1">Volver a esta página</a></li>';
+            echo '</ol>';
+        }
+    } else {
+        echo '<p class="warning">⚠️ No hay sesión activa</p>';
+        echo '<p><a href="' . BASE_URL . 'auth/google" style="display:inline-block; background:#4caf50; color:white; padding:10px 20px; text-decoration:none; border-radius:5px;">Iniciar Sesión con Google</a></p>';
+    }
+    
+    echo '</div>';
+    ?>
+    
+    <div style="margin-top: 30px; text-align: center; padding: 20px; background: #000; border-radius: 8px;">
+        <p><a href="<?php echo BASE_URL; ?>">← Volver al Inicio</a></p>
+    </div>
+    </body></html>
+    <?php
     exit;
 }
 
@@ -24,18 +190,10 @@ try {
     $uri = $_SERVER['REQUEST_URI'];
     $uri = parse_url($uri, PHP_URL_PATH);
     
-    // Debug logging
-    error_log("=== INDEX.PHP REQUEST ===");
-    error_log("Original URI: " . $_SERVER['REQUEST_URI']);
-    error_log("Parsed URI: " . $uri);
-    
     // Remove base path dynamically
     $basePath = parse_url(BASE_URL, PHP_URL_PATH);
     $uri = str_replace($basePath, '', $uri);
     $uri = trim($uri, '/');
-    
-    error_log("Base path: " . $basePath);
-    error_log("Final URI: " . $uri);
     
     // Handle specific routes FIRST (before anything else)
     
