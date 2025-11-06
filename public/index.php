@@ -123,11 +123,58 @@ try {
 
                 <!-- CTA and Mobile Menu -->
                 <div class="flex md:flex-grow md:basis-0 items-center gap-4 mr-4 ml-auto md:ml-0 justify-end">
-                    <!-- CTA Button -->
-                    <a href="#contacto" class="hidden md:flex items-center gap-2 px-4 py-2 bg-white text-black hover:bg-gray-200 rounded-2xl transition-all font-semibold">
-                        <i class="fas fa-rocket" aria-hidden="true"></i>
-                        Cotizar Proyecto
-                    </a>
+                    <?php
+                    require_once '../app/controllers/AuthController.php';
+                    $isLoggedIn = AuthController::isAuthenticated();
+                    $user = AuthController::getCurrentUser();
+                    
+                    if ($isLoggedIn && $user): ?>
+                        <!-- User Profile Dropdown -->
+                        <div class="relative" id="userDropdown">
+                            <button onclick="toggleUserMenu()" class="flex items-center gap-2 hover:bg-white/5 rounded-2xl px-3 py-2 transition-all">
+                                <?php if (!empty($user['picture'])): ?>
+                                    <img src="<?php echo htmlspecialchars($user['picture']); ?>" 
+                                         alt="<?php echo htmlspecialchars($user['name']); ?>"
+                                         class="w-8 h-8 rounded-full border-2 border-blue-500">
+                                <?php else: ?>
+                                    <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-bold">
+                                        <?php echo strtoupper(substr($user['name'], 0, 1)); ?>
+                                    </div>
+                                <?php endif; ?>
+                                <span class="text-white hidden md:block"><?php echo htmlspecialchars(explode(' ', $user['name'])[0]); ?></span>
+                                <i class="fas fa-chevron-down text-white text-xs"></i>
+                            </button>
+                            
+                            <!-- Dropdown Menu -->
+                            <div id="userMenu" class="hidden absolute right-0 mt-2 w-64 bg-gray-900 border border-gray-700 rounded-xl shadow-2xl z-50">
+                                <div class="p-4 border-b border-gray-700">
+                                    <p class="text-white font-semibold"><?php echo htmlspecialchars($user['name']); ?></p>
+                                    <p class="text-gray-400 text-sm"><?php echo htmlspecialchars($user['email']); ?></p>
+                                </div>
+                                <div class="p-2">
+                                    <a href="<?php echo url('mis-suscripciones'); ?>" class="flex items-center gap-3 px-4 py-2 text-gray-300 hover:bg-white/5 rounded-lg transition-all">
+                                        <i class="fas fa-credit-card"></i>
+                                        <span>Mis Suscripciones</span>
+                                    </a>
+                                    <a href="<?php echo url('perfil'); ?>" class="flex items-center gap-3 px-4 py-2 text-gray-300 hover:bg-white/5 rounded-lg transition-all">
+                                        <i class="fas fa-user"></i>
+                                        <span>Mi Perfil</span>
+                                    </a>
+                                    <hr class="my-2 border-gray-700">
+                                    <a href="<?php echo url('auth/logout'); ?>" class="flex items-center gap-3 px-4 py-2 text-red-400 hover:bg-red-500/10 rounded-lg transition-all">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        <span>Cerrar Sesión</span>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    <?php else: ?>
+                        <!-- CTA Button -->
+                        <a href="#contacto" class="hidden md:flex items-center gap-2 px-4 py-2 bg-white text-black hover:bg-gray-200 rounded-2xl transition-all font-semibold">
+                            <i class="fas fa-rocket" aria-hidden="true"></i>
+                            Cotizar Proyecto
+                        </a>
+                    <?php endif; ?>
                     
                     <!-- Mobile Menu Toggle -->
                     <button class="flex items-center justify-center py-2 md:hidden group" id="header-navbar-toggle" aria-controls="header-navbar" title="Mostrar Menú" aria-label="Mostrar menú" aria-expanded="false">
@@ -165,6 +212,22 @@ try {
 
         <!-- JavaScript -->
         <script>
+            // User menu dropdown toggle
+            function toggleUserMenu() {
+                const userMenu = document.getElementById('userMenu');
+                userMenu.classList.toggle('hidden');
+            }
+
+            // Close user menu when clicking outside
+            document.addEventListener('click', function(event) {
+                const userDropdown = document.getElementById('userDropdown');
+                const userMenu = document.getElementById('userMenu');
+                
+                if (userDropdown && userMenu && !userDropdown.contains(event.target)) {
+                    userMenu.classList.add('hidden');
+                }
+            });
+
             // Modern mobile menu toggle
             const mobileMenuToggle = document.getElementById('header-navbar-toggle');
             const headerNavbar = document.getElementById('header-navbar');
