@@ -5,7 +5,7 @@ $page_description = 'Política de privacidad y protección de datos de LDX Softw
 
 // Define access constant and include config
 define('LDX_ACCESS', true);
-require_once '../config/config.php';
+require_once __DIR__ . '/config/config.php';
 ?>
 
 <!DOCTYPE html>

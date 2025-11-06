@@ -5,7 +5,7 @@ $page_description = 'Términos y condiciones de uso de los servicios de LDX Soft
 
 // Define access constant and include config
 define('LDX_ACCESS', true);
-require_once '../config/config.php';
+require_once __DIR__ . '/config/config.php';
 ?>
 
 <!DOCTYPE html>

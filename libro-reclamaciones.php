@@ -45,7 +45,7 @@ require_once __DIR__ . '/config/config.php';
                     </div>
                     <div>
                         <p class="font-semibold text-white mb-1">RUC:</p>
-                        <p>20XXXXXXXXX</p>
+                        <p>20614790530</p>
                     </div>
                     <div>
                         <p class="font-semibold text-white mb-1">Dirección:</p>
@@ -53,7 +53,7 @@ require_once __DIR__ . '/config/config.php';
                     </div>
                     <div>
                         <p class="font-semibold text-white mb-1">Teléfono:</p>
-                        <p>+51 XXX XXX XXX</p>
+                        <p>+51 905 940 757</p>
                     </div>
                     <div>
                         <p class="font-semibold text-white mb-1">Email:</p>
