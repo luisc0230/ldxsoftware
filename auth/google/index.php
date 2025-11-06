@@ -4,8 +4,8 @@
  */
 
 define('LDX_ACCESS', true);
-require_once '../../../config/config.php';
-require_once '../../../app/controllers/AuthController.php';
+require_once __DIR__ . '/../../config/config.php';
+require_once __DIR__ . '/../../app/controllers/AuthController.php';
 
 $authController = new AuthController();
 $authController->googleLogin();

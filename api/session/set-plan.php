@@ -4,7 +4,7 @@
  */
 
 define('LDX_ACCESS', true);
-require_once '../../../config/config.php';
+require_once __DIR__ . '/../../config/config.php';
 
 header('Content-Type: application/json');
 

@@ -11,7 +11,7 @@ ini_set('display_errors', 1);
 define('LDX_ACCESS', true);
 
 // Include configuration
-require_once '../config/config.php';
+require_once __DIR__ . '/config/config.php';
 
 try {
     // Get the requested URI
@@ -190,25 +190,25 @@ try {
         </header>
 
         <!-- Include Hero Section -->
-        <?php include '../app/includes/hero.php'; ?>
+        <?php include __DIR__ . '/app/includes/hero.php'; ?>
 
         <!-- Include Description Section -->
-        <?php include '../app/includes/descripcion.php'; ?>
+        <?php include __DIR__ . '/app/includes/descripcion.php'; ?>
 
         <!-- Include Services Section -->
-        <?php include '../app/includes/services.php'; ?>
+        <?php include __DIR__ . '/app/includes/services.php'; ?>
 
         <!-- Include Trabajos Section -->
-        <?php include '../app/includes/trabajos.php'; ?>
+        <?php include __DIR__ . '/app/includes/trabajos.php'; ?>
 
         <!-- Include Suscripciones Section -->
-        <?php include '../app/includes/suscripciones.php'; ?>
+        <?php include __DIR__ . '/app/includes/suscripciones.php'; ?>
 
         <!-- Include Contact Section -->
-        <?php include '../app/includes/contact.php'; ?>
+        <?php include __DIR__ . '/app/includes/contact.php'; ?>
 
         <!-- Include Footer -->
-        <?php include '../app/includes/footer.php'; ?>
+        <?php include __DIR__ . '/app/includes/footer.php'; ?>
 
         <!-- JavaScript -->
         <script>
