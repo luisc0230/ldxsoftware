@@ -15,7 +15,9 @@ if (!defined('LDX_ACCESS')) {
 }
 
 // Base URL Configuration - Change this when moving to production
-define('BASE_URL', 'https://ldxsoftware.com.pe/');
+// Si tu sitio está en public_html/web/, usa: 'https://ldxsoftware.com.pe/web/'
+// Si tu sitio está en public_html/ (raíz), usa: 'https://ldxsoftware.com.pe/'
+define('BASE_URL', 'https://ldxsoftware.com.pe/web/');
 
 // Site Configuration
 define('SITE_NAME', 'LDX Software');
