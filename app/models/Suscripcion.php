@@ -86,4 +86,41 @@ class Suscripcion {
         $stmt->execute();
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
     }
+    
+    /**
+     * Obtener todas las suscripciones del usuario (activas, pendientes, canceladas)
+     */
+    public function obtenerPorUsuario($usuarioId) {
+        $stmt = $this->db->prepare("
+            SELECT s.*, p.nombre as plan_nombre, p.precio_mensual, p.precio_anual
+            FROM suscripciones s
+            INNER JOIN planes p ON s.plan_id = p.id
+            WHERE s.usuario_id = ?
+            ORDER BY s.fecha_creacion DESC
+        ");
+        $stmt->bind_param("i", $usuarioId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
+    }
+    
+    /**
+     * Cancelar suscripción
+     */
+    public function cancelar($suscripcionId) {
+        $stmt = $this->db->prepare("
+            UPDATE suscripciones 
+            SET estado = 'cancelada', 
+                fecha_actualizacion = NOW()
+            WHERE id = ?
+        ");
+        $stmt->bind_param("i", $suscripcionId);
+        
+        if ($stmt->execute()) {
+            error_log("Suscripción cancelada: ID $suscripcionId");
+            return true;
+        }
+        
+        error_log("Error al cancelar suscripción: " . $this->db->error);
+        return false;
+    }
 }

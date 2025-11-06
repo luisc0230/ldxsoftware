@@ -143,7 +143,7 @@ class SuscripcionController {
                     'success' => true,
                     'message' => '¡Suscripción activada exitosamente!',
                     'suscripcion_id' => $suscripcionId,
-                    'redirect' => BASE_URL . 'mis-suscripciones'
+                    'redirect' => BASE_URL . 'pago-exitoso'
                 ]);
             } else {
                 throw new Exception('Error al procesar el pago');

@@ -225,6 +225,9 @@ try {
     } elseif ($uri === 'checkout') {
         include 'checkout.php';
         exit;
+    } elseif ($uri === 'pago-exitoso') {
+        include 'pago-exitoso.php';
+        exit;
     }
     
     // For other routes, show the main landing page

@@ -15,15 +15,29 @@ if (!AuthController::isAuthenticated()) {
 
 $user = AuthController::getCurrentUser();
 
-// Cargar suscripciones del usuario
-$subscriptionsFile = APP_PATH . 'data/subscriptions.json';
-$userSubscriptions = [];
+// Cargar suscripciones del usuario desde la base de datos
+require_once __DIR__ . '/app/models/Database.php';
+require_once __DIR__ . '/app/models/Suscripcion.php';
 
-if (file_exists($subscriptionsFile)) {
-    $allSubscriptions = json_decode(file_get_contents($subscriptionsFile), true) ?? [];
-    $userSubscriptions = array_filter($allSubscriptions, function($sub) use ($user) {
-        return $sub['user_email'] === $user['email'];
-    });
+$userSubscriptions = [];
+try {
+    $suscripcionModel = new Suscripcion();
+    $suscripciones = $suscripcionModel->obtenerPorUsuario($user['id']);
+    
+    // Convertir a formato compatible con la vista
+    foreach ($suscripciones as $sub) {
+        $userSubscriptions[] = [
+            'id' => $sub['id'],
+            'plan_type' => $sub['plan_nombre'],
+            'status' => ($sub['estado'] === 'activa') ? 1 : (($sub['estado'] === 'pendiente') ? 0 : 2),
+            'amount' => $sub['precio_pagado'],
+            'start_date' => $sub['fecha_inicio'],
+            'next_billing' => $sub['fecha_fin'],
+            'tipo_pago' => $sub['tipo_pago']
+        ];
+    }
+} catch (Exception $e) {
+    error_log("Error al cargar suscripciones: " . $e->getMessage());
 }
 ?>
 <!DOCTYPE html>
