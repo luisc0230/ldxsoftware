@@ -22,6 +22,7 @@
     # Allow direct access to test and check files (for debugging)
     RewriteRule ^test-db\.php$ test-db.php [L]
     RewriteRule ^diagnostico-session\.php$ diagnostico-session.php [L]
+    RewriteRule ^fix-session\.php$ fix-session.php [L]
     RewriteRule ^auth/check-config\.php$ auth/check-config.php [L]
 
     # Route all requests through index.php (except existing files)
