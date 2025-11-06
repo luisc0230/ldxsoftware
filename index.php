@@ -39,6 +39,9 @@ try {
     } elseif ($uri === 'checkout') {
         include 'checkout.php';
         exit;
+    } elseif ($uri === 'test-db') {
+        include 'test-db.php';
+        exit;
     }
     
     // For other routes, show the main landing page

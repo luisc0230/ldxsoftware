@@ -18,6 +18,10 @@
     RewriteRule ^auth/google/?$ auth/google/index.php [L]
     RewriteRule ^auth/google/callback$ auth/google/callback.php [QSA,L]
     RewriteRule ^auth/logout$ auth/logout.php [L]
+    
+    # Allow direct access to test and check files (for debugging)
+    RewriteRule ^test-db\.php$ test-db.php [L]
+    RewriteRule ^auth/check-config\.php$ auth/check-config.php [L]
 
     # Route all requests through index.php (except existing files)
     RewriteCond %{REQUEST_FILENAME} !-f
