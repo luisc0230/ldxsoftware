@@ -43,8 +43,9 @@ define('CULQI_SECRET_KEY', 'sk_test_1JdA4a8tJsBlrCpG');
 define('CULQI_API_URL', 'https://api.culqi.com/v2/');
 
 // Google OAuth Configuration
-define('GOOGLE_CLIENT_ID', ''); // Set your Google Client ID
-define('GOOGLE_CLIENT_SECRET', ''); // Set your Google Client Secret
+// IMPORTANTE: Configura estas variables en el servidor (no subas las credenciales a Git)
+define('GOOGLE_CLIENT_ID', getenv('GOOGLE_CLIENT_ID') ?: ''); // Set your Google Client ID
+define('GOOGLE_CLIENT_SECRET', getenv('GOOGLE_CLIENT_SECRET') ?: ''); // Set your Google Client Secret
 define('GOOGLE_REDIRECT_URI', BASE_URL . 'auth/google/callback');
 
 // Security Configuration
