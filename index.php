@@ -42,6 +42,9 @@ try {
     } elseif ($uri === 'test-db') {
         include 'test-db.php';
         exit;
+    } elseif ($uri === 'diagnostico-session') {
+        include 'diagnostico-session.php';
+        exit;
     }
     
     // For other routes, show the main landing page
