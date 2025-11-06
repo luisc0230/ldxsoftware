@@ -23,11 +23,12 @@ define('SITE_DESCRIPTION', 'Soluciones de software innovadoras y personalizadas'
 define('SITE_KEYWORDS', 'software, desarrollo, web, aplicaciones, LDX');
 define('SITE_AUTHOR', 'LDX Software');
 
-// Database Configuration (if needed in the future)
+// Database Configuration
 define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'ldx_software');
+define('DB_USER', 'a0020110_ldx');
+define('DB_PASS', 'deNEmi60ka');
+define('DB_NAME', 'a0020110_ldx');
+define('DB_CHARSET', 'utf8mb4');
 
 // Email Configuration
 define('SMTP_HOST', 'smtp.gmail.com');

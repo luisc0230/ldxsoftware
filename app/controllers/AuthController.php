@@ -64,21 +64,30 @@ class AuthController {
         }
         error_log("Usuario obtenido: " . ($userInfo['email'] ?? 'sin email'));
         
-        // Guardar usuario en sesión
+        // Guardar usuario en base de datos
+        error_log("Guardando usuario en base de datos...");
+        require_once __DIR__ . '/../models/Usuario.php';
+        $usuarioModel = new Usuario();
+        $usuario = $usuarioModel->createOrUpdateFromGoogle($userInfo);
+        
+        if (!$usuario) {
+            error_log("ERROR: No se pudo guardar usuario en BD");
+            header('Location: ' . BASE_URL . '?error=db_save_failed');
+            exit;
+        }
+        
+        // Guardar usuario en sesión con el ID de la base de datos
         error_log("Guardando usuario en sesión...");
         $_SESSION['user'] = [
-            'id' => $userInfo['id'],
-            'email' => $userInfo['email'],
-            'name' => $userInfo['name'],
-            'picture' => $userInfo['picture'] ?? '',
+            'id' => $usuario['id'], // ID de la base de datos
+            'google_id' => $usuario['google_id'],
+            'email' => $usuario['email'],
+            'name' => $usuario['nombre'],
+            'picture' => $usuario['foto'] ?? '',
             'logged_in' => true,
             'login_time' => time()
         ];
-        error_log("Usuario guardado en sesión. Session ID: " . session_id());
-        
-        // Guardar usuario en archivo JSON
-        error_log("Guardando usuario en archivo JSON...");
-        $this->saveUser($userInfo);
+        error_log("Usuario guardado en sesión. Usuario ID: " . $usuario['id'] . ", Session ID: " . session_id());
         
         // Verificar si hay un plan seleccionado en la sesión
         if (isset($_SESSION['planSeleccionado']) && isset($_SESSION['precioSeleccionado'])) {
@@ -152,49 +161,6 @@ class AuthController {
         }
         
         return json_decode($response, true);
-    }
-    
-    /**
-     * Guardar usuario en archivo JSON
-     */
-    private function saveUser($userInfo) {
-        $usersFile = APP_PATH . 'data/users.json';
-        
-        // Crear directorio si no existe
-        if (!file_exists(dirname($usersFile))) {
-            mkdir(dirname($usersFile), 0755, true);
-        }
-        
-        // Leer usuarios existentes
-        $users = [];
-        if (file_exists($usersFile)) {
-            $users = json_decode(file_get_contents($usersFile), true) ?? [];
-        }
-        
-        // Buscar si el usuario ya existe
-        $userExists = false;
-        foreach ($users as &$user) {
-            if ($user['id'] === $userInfo['id']) {
-                $user['last_login'] = date('Y-m-d H:i:s');
-                $userExists = true;
-                break;
-            }
-        }
-        
-        // Si no existe, agregarlo
-        if (!$userExists) {
-            $users[] = [
-                'id' => $userInfo['id'],
-                'email' => $userInfo['email'],
-                'name' => $userInfo['name'],
-                'picture' => $userInfo['picture'] ?? '',
-                'created_at' => date('Y-m-d H:i:s'),
-                'last_login' => date('Y-m-d H:i:s')
-            ];
-        }
-        
-        // Guardar usuarios
-        file_put_contents($usersFile, json_encode($users, JSON_PRETTY_PRINT));
     }
     
     /**

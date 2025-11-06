@@ -55,7 +55,7 @@
                     </li>
                 </ul>
 
-                <button onclick="iniciarSuscripcion('basico', 99)" 
+                <button onclick="iniciarSuscripcion(1, 'basico', 29, 'mensual')" 
                         class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105">
                     Suscribirse Ahora
                 </button>
@@ -113,7 +113,7 @@
                     </li>
                 </ul>
 
-                <button onclick="iniciarSuscripcion('profesional', 199)" 
+                <button onclick="iniciarSuscripcion(2, 'profesional', 59, 'mensual')" 
                         class="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg shadow-purple-500/50">
                     Suscribirse Ahora
                 </button>
@@ -168,7 +168,7 @@
                     </li>
                 </ul>
 
-                <button onclick="iniciarSuscripcion('empresarial', 399)" 
+                <button onclick="iniciarSuscripcion(3, 'empresarial', 99, 'mensual')" 
                         class="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105">
                     Suscribirse Ahora
                 </button>
@@ -224,21 +224,60 @@
 </div>
 
 <script>
-let planSeleccionado = null;
+let planIdSeleccionado = null;
+let planNombreSeleccionado = null;
 let precioSeleccionado = null;
+let tipoPagoSeleccionado = 'mensual';
 
-function iniciarSuscripcion(plan, precio) {
-    planSeleccionado = plan;
+async function iniciarSuscripcion(planId, planNombre, precio, tipoPago = 'mensual') {
+    console.log('Iniciando suscripción:', {planId, planNombre, precio, tipoPago});
+    
+    planIdSeleccionado = planId;
+    planNombreSeleccionado = planNombre;
     precioSeleccionado = precio;
+    tipoPagoSeleccionado = tipoPago;
     
     // Actualizar información del modal
-    document.getElementById('planNombre').textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+    document.getElementById('planNombre').textContent = planNombre.charAt(0).toUpperCase() + planNombre.slice(1);
     document.getElementById('planPrecio').textContent = precio;
     document.getElementById('planSeleccionado').classList.remove('hidden');
     
-    // Mostrar modal
-    document.getElementById('loginModal').classList.remove('hidden');
-    document.getElementById('loginModal').classList.add('flex');
+    // Guardar en sesión del servidor
+    try {
+        const response = await fetch('<?php echo BASE_URL; ?>api/iniciar-suscripcion.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: new URLSearchParams({
+                plan_id: planId,
+                tipo_pago: tipoPago,
+                precio: precio
+            })
+        });
+        
+        const data = await response.json();
+        console.log('Respuesta del servidor:', data);
+        
+        if (data.success) {
+            if (data.logged_in) {
+                // Usuario ya está logueado, ir a checkout
+                console.log('Usuario logueado, redirigiendo a checkout');
+                window.location.href = data.redirect;
+            } else {
+                // Usuario no logueado, mostrar modal para login
+                console.log('Usuario no logueado, mostrando modal');
+                document.getElementById('loginModal').classList.remove('hidden');
+                document.getElementById('loginModal').classList.add('flex');
+            }
+        } else {
+            console.error('Error:', data.error);
+            alert('Error al iniciar suscripción: ' + data.error);
+        }
+    } catch (error) {
+        console.error('Error guardando plan:', error);
+        alert('Error de conexión. Por favor intenta nuevamente.');
+    }
 }
 
 function cerrarModal() {
@@ -246,28 +285,9 @@ function cerrarModal() {
     document.getElementById('loginModal').classList.remove('flex');
 }
 
-async function loginConGoogle() {
-    // Guardar plan seleccionado en sessionStorage
-    sessionStorage.setItem('planSeleccionado', planSeleccionado);
-    sessionStorage.setItem('precioSeleccionado', precioSeleccionado);
-    
-    // Guardar en sesión del servidor también
-    try {
-        await fetch('<?php echo BASE_URL; ?>api/session/set-plan', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                plan: planSeleccionado,
-                precio: precioSeleccionado
-            })
-        });
-    } catch (error) {
-        console.error('Error guardando plan:', error);
-    }
-    
-    // Redirigir a Google OAuth
+function loginConGoogle() {
+    console.log('Redirigiendo a Google OAuth...');
+    // El plan ya está guardado en la sesión del servidor
     window.location.href = '<?php echo url('auth/google'); ?>';
 }
 
