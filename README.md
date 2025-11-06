@@ -64,7 +64,7 @@ ldx/
 
 1. **Clonar o descargar el proyecto**
    ```bash
-   git clone [repository-url] ldx
+   git clone https://github.com/luisc0230/ldxsoftware.git ldx
    cd ldx
    ```
 
