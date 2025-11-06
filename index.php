@@ -124,7 +124,7 @@ try {
                 <!-- CTA and Mobile Menu -->
                 <div class="flex md:flex-grow md:basis-0 items-center gap-4 mr-4 ml-auto md:ml-0 justify-end">
                     <?php
-                    require_once '../app/controllers/AuthController.php';
+                    require_once __DIR__ . '/app/controllers/AuthController.php';
                     $isLoggedIn = AuthController::isAuthenticated();
                     $user = AuthController::getCurrentUser();
                     
