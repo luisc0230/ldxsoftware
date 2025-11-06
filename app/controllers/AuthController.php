@@ -31,30 +31,41 @@ class AuthController {
      * Callback de Google OAuth
      */
     public function googleCallback() {
+        error_log("googleCallback() iniciado");
+        
         if (!isset($_GET['code'])) {
+            error_log("ERROR: No se recibió código de autorización");
             header('Location: ' . BASE_URL . '?error=auth_failed');
             exit;
         }
         
         $code = $_GET['code'];
+        error_log("Código recibido: " . substr($code, 0, 20) . "...");
         
         // Intercambiar código por token
+        error_log("Intentando obtener token...");
         $tokenData = $this->getGoogleToken($code);
         
         if (!$tokenData) {
+            error_log("ERROR: No se pudo obtener token de Google");
             header('Location: ' . BASE_URL . '?error=token_failed');
             exit;
         }
+        error_log("Token obtenido exitosamente");
         
         // Obtener información del usuario
+        error_log("Obteniendo información del usuario...");
         $userInfo = $this->getGoogleUserInfo($tokenData['access_token']);
         
         if (!$userInfo) {
+            error_log("ERROR: No se pudo obtener información del usuario");
             header('Location: ' . BASE_URL . '?error=user_info_failed');
             exit;
         }
+        error_log("Usuario obtenido: " . ($userInfo['email'] ?? 'sin email'));
         
         // Guardar usuario en sesión
+        error_log("Guardando usuario en sesión...");
         $_SESSION['user'] = [
             'id' => $userInfo['id'],
             'email' => $userInfo['email'],
@@ -63,16 +74,20 @@ class AuthController {
             'logged_in' => true,
             'login_time' => time()
         ];
+        error_log("Usuario guardado en sesión. Session ID: " . session_id());
         
         // Guardar usuario en archivo JSON
+        error_log("Guardando usuario en archivo JSON...");
         $this->saveUser($userInfo);
         
         // Verificar si hay un plan seleccionado en la sesión
         if (isset($_SESSION['planSeleccionado']) && isset($_SESSION['precioSeleccionado'])) {
             // Si hay plan seleccionado, ir a checkout
+            error_log("Redirigiendo a checkout...");
             header('Location: ' . BASE_URL . 'checkout');
         } else {
             // Si no hay plan, volver al inicio
+            error_log("Redirigiendo al inicio con login=success");
             header('Location: ' . BASE_URL . '?login=success');
         }
         exit;
@@ -97,9 +112,15 @@ class AuthController {
         
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
         curl_close($ch);
         
         if ($httpCode !== 200) {
+            error_log("ERROR getGoogleToken: HTTP " . $httpCode);
+            error_log("Response: " . $response);
+            if ($curlError) {
+                error_log("cURL Error: " . $curlError);
+            }
             return false;
         }
         
@@ -118,9 +139,15 @@ class AuthController {
         
         $response = curl_exec($ch);
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
         curl_close($ch);
         
         if ($httpCode !== 200) {
+            error_log("ERROR getGoogleUserInfo: HTTP " . $httpCode);
+            error_log("Response: " . $response);
+            if ($curlError) {
+                error_log("cURL Error: " . $curlError);
+            }
             return false;
         }
         

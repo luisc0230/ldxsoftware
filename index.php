@@ -212,6 +212,25 @@ try {
 
         <!-- JavaScript -->
         <script>
+            // Debug: Check session status
+            <?php if ($isLoggedIn && $user): ?>
+            console.log("✅ Usuario logueado:", <?php echo json_encode($user); ?>);
+            <?php else: ?>
+            console.log("❌ Usuario NO logueado");
+            <?php endif; ?>
+            
+            // Check for login success parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('login')) {
+                console.log("Login status:", urlParams.get('login'));
+                if (urlParams.get('login') === 'success') {
+                    console.log("✅ Login exitoso detectado!");
+                }
+            }
+            if (urlParams.has('error')) {
+                console.error("❌ Error de autenticación:", urlParams.get('error'));
+            }
+            
             // User menu dropdown toggle
             function toggleUserMenu() {
                 const userMenu = document.getElementById('userMenu');

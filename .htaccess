@@ -14,6 +14,11 @@
     RewriteRule ^vendor/.*$ - [F,L]
     RewriteRule ^\.git/.*$ - [F,L]
 
+    # Allow auth routes to their respective files
+    RewriteRule ^auth/google/?$ auth/google/index.php [L]
+    RewriteRule ^auth/google/callback$ auth/google/callback.php [QSA,L]
+    RewriteRule ^auth/logout$ auth/logout.php [L]
+
     # Route all requests through index.php (except existing files)
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
