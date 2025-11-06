@@ -15,10 +15,10 @@
     RewriteRule ^composer\.(json|lock)$ - [F,L]
     RewriteRule ^\.env$ - [F,L]
 
-    # Route all requests through index.php
+    # Route all requests through public/index.php
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)$ index.php [QSA,L]
+    RewriteRule ^(.*)$ public/index.php [QSA,L]
 </IfModule>
 
 # Security Headers
