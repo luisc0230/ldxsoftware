@@ -13,6 +13,12 @@ define('LDX_ACCESS', true);
 // Include configuration
 require_once __DIR__ . '/config/config.php';
 
+// SOLUCIÓN ALTERNATIVA: Detectar parámetro fix_session
+if (isset($_GET['fix_session']) && $_GET['fix_session'] == '1') {
+    require_once __DIR__ . '/fix-session.php';
+    exit;
+}
+
 try {
     // Get the requested URI
     $uri = $_SERVER['REQUEST_URI'];
