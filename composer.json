@@ -1,0 +1,55 @@
+{
+    "name": "ldx-software/landing-page",
+    "description": "Modern landing page for LDX Software built with PHP MVC architecture",
+    "type": "project",
+    "keywords": ["php", "mvc", "landing-page", "tailwindcss", "responsive"],
+    "homepage": "https://ldxsoftware.com",
+    "license": "proprietary",
+    "authors": [
+        {
+            "name": "LDX Software",
+            "email": "contacto@ldxsoftware.com.pe",
+            "homepage": "https://ldxsoftware.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.4",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-openssl": "*",
+        "phpmailer/phpmailer": "^6.8"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0"
+    },
+    "suggest": {
+        "phpmailer/phpmailer": "For email functionality",
+        "monolog/monolog": "For advanced logging",
+        "vlucas/phpdotenv": "For environment variables"
+    },
+    "autoload": {
+        "psr-4": {
+            "LDX\\": "app/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "LDX\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "serve": "php -S localhost:8000 -t public/",
+        "deploy": [
+            "echo 'Deploying LDX Software Landing Page...'",
+            "composer install --no-dev --optimize-autoloader"
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

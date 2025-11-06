@@ -1,0 +1,24 @@
+<?php
+// Dynamic robots.txt generation
+define('LDX_ACCESS', true);
+require_once '../config/config.php';
+
+header('Content-Type: text/plain; charset=utf-8');
+?>
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: <?php echo url('sitemap.xml'); ?>
+
+# Disallow admin areas (if any)
+Disallow: /app/
+Disallow: /config/
+Disallow: /vendor/
+Disallow: /*.json$
+
+# Allow important assets
+Allow: /assets/
+
+# Crawl delay (optional)
+Crawl-delay: 1

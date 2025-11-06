@@ -1,0 +1,62 @@
+# Directorio de Imágenes - LDX Software
+
+Este directorio debe contener las siguientes imágenes para el correcto funcionamiento del sitio:
+
+## Imágenes Principales
+- logo.png (Logo principal - fondo transparente)
+- logo-white.png (Logo blanco para fondos oscuros)
+- hero-bg.jpg (Imagen de fondo del hero - 1920x1080px recomendado)
+- about-team.jpg (Foto del equipo - 800x600px recomendado)
+- og-image.jpg (Imagen para Open Graph - 1200x630px)
+- twitter-card.jpg (Imagen para Twitter Cards - 1200x600px)
+
+## Favicon
+- favicon.ico (16x16, 32x32, 48x48px)
+- favicon-16x16.png
+- favicon-32x32.png
+- apple-touch-icon.png (180x180px)
+- site.webmanifest
+
+## Portfolio
+portfolio/
+├── thumbs/
+│   ├── mexitech.jpg
+│   ├── fastfood.jpg
+│   ├── manufacturapro.jpg
+│   ├── edulearn.jpg
+│   ├── bizintel.jpg
+│   ├── trackfit.jpg
+│   ├── ventaspro.jpg
+│   └── techcorp.jpg
+├── mexitech-1.jpg
+├── mexitech-2.jpg
+├── mexitech-3.jpg
+└── [más imágenes de proyectos...]
+
+## Testimonios
+testimonials/
+├── maria-gonzalez.jpg
+├── carlos-rodriguez.jpg
+├── ana-martinez.jpg
+├── roberto-silva.jpg
+├── patricia-lopez.jpg
+├── miguel-hernandez.jpg
+├── sofia-ramirez.jpg
+├── david-chen.jpg
+├── laura-jimenez.jpg
+└── fernando-morales.jpg
+
+## Equipo
+team/
+├── luis.jpg
+├── diana.jpg
+└── xavier.jpg
+
+## Notas:
+- Todas las imágenes deben estar optimizadas para web
+- Formatos recomendados: JPG para fotos, PNG para logos con transparencia
+- Tamaños máximos recomendados: 1MB por imagen
+- Usar herramientas como TinyPNG para optimización
+
+Para generar favicons, puedes usar: https://favicon.io/
+Para optimizar imágenes, puedes usar: https://tinypng.com/

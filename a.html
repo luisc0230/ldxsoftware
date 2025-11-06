@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Control diario de trabajo</title>
+<style>
+  :root{
+    --ink:#0f172a;
+    --rule:#0b3b8b;
+    --paper:#ffffff;
+  }
+  html,body{
+    background:var(--paper);
+    color:var(--ink);
+    font:20px/1.55 "Inter", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    margin:0;
+  }
+  .page{
+    max-width:980px;
+    margin:28px auto 64px;
+    padding:0 18px;
+    text-align:center;
+  }
+  h1{
+    font-size:25PX;
+    margin:0 0 6px;
+    font-weight:800;
+  }
+  h2{
+    font-size:22px;
+    margin:0 0 22px;
+    font-weight:600;
+    color:#475569;
+  }
+
+  table.sheet{
+    width:100%;
+    border-collapse:collapse;
+    table-layout:fixed;
+    border:3px solid var(--rule);
+  }
+  .sheet th, .sheet td{
+    border:2px solid var(--rule);
+    padding:10px;
+    vertical-align:middle;
+    text-align:center;
+  }
+  thead th{
+    background:#f5f7ff;
+    font-weight:800;
+  }
+  .horas{ width:170px; }
+  .recreo{
+    background:#eef3ff;
+    font-weight:800;
+    letter-spacing:.5px;
+    text-align:center;
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <h1 contenteditable="true">CONTROL DIARIO DE UNIDOCENCIA</h1>
+    <h2 contenteditable="true"></h2>
+
+    <table class="sheet">
+      <thead>
+        <tr>
+          <th class="horas">HORAS</th>
+          <th>L</th>
+          <th>M</th>
+          <th>M</th>
+          <th>J</th>
+          <th>V</th>
+          <th>S</th>
+          <th>&nbsp;</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th class="horas">7:20 – 7:50</th>
+          <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+          <th class="horas">7:50 – 8:40</th>
+          <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+          <th class="horas">8:40 – 9:25</th>
+          <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+          <th class="horas">9:25 – 10:10</th>
+          <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+        </tr>
+        <!-- Recreo como una sola fila -->
+        <tr>
+          <th class="horas"></th>
+          <td class="recreo" colspan="7">RECREO</td>
+        </tr>
+        <tr>
+          <th class="horas">11:20 – 12:00</th>
+          <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+          <th class="horas">12:00 – 12:40</th>
+          <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+          <th class="horas">12:40 – 1:20</th>
+          <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+        </tr>
+        <tr>
+          <th class="horas">1:20 – 2:00</th>
+          <td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

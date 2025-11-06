@@ -1,0 +1,10 @@
+# LDX Software - Root .htaccess
+# Redirect all requests to public directory
+
+RewriteEngine On
+
+# Redirect to public directory
+# Development: !^/public/
+# Production: !^/public/
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteRule ^(.*)$ public/$1 [L]
