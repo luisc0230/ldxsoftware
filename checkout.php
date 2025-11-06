@@ -120,13 +120,28 @@ $user = AuthController::getCurrentUser();
     </div>
 
     <script>
-        // Recuperar plan seleccionado
-        const planSeleccionado = sessionStorage.getItem('planSeleccionado') || 'basico';
-        const precioSeleccionado = sessionStorage.getItem('precioSeleccionado') || '99';
+        // Recuperar plan seleccionado desde PHP session
+        <?php
+        $planId = $_SESSION['planSeleccionado'] ?? 1;
+        $tipoPago = $_SESSION['tipoPagoSeleccionado'] ?? 'mensual';
+        $precio = $_SESSION['precioSeleccionado'] ?? 29;
+        
+        // Nombres de planes
+        $planesNombres = [
+            1 => 'Básico',
+            2 => 'Profesional',
+            3 => 'Empresarial'
+        ];
+        $planNombre = $planesNombres[$planId] ?? 'Básico';
+        ?>
+        
+        const planId = <?php echo $planId; ?>;
+        const planNombre = '<?php echo $planNombre; ?>';
+        const precio = <?php echo $precio; ?>;
         
         // Actualizar UI
-        document.getElementById('planNombre').textContent = planSeleccionado.charAt(0).toUpperCase() + planSeleccionado.slice(1);
-        document.getElementById('planPrecio').textContent = precioSeleccionado;
+        document.getElementById('planNombre').textContent = planNombre;
+        document.getElementById('planPrecio').textContent = precio;
         
         // Configurar Culqi
         Culqi.publicKey = '<?php echo CULQI_PUBLIC_KEY; ?>';
@@ -134,7 +149,7 @@ $user = AuthController::getCurrentUser();
         Culqi.settings({
             title: 'LDX Software',
             currency: 'PEN',
-            amount: parseInt(precioSeleccionado) * 100, // Convertir a centavos
+            amount: parseInt(precio) * 100, // Convertir a centavos
             order: 'ord_live_' + Date.now()
         });
         
@@ -166,26 +181,20 @@ $user = AuthController::getCurrentUser();
                 document.getElementById('btnPagar').disabled = true;
                 
                 // Enviar token al servidor para procesar suscripción
-                fetch('<?php echo BASE_URL; ?>api/subscription/process', {
+                fetch('<?php echo BASE_URL; ?>api/procesar-pago.php', {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
+                        'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                    body: JSON.stringify({
-                        token: token,
-                        plan: planSeleccionado,
-                        email: '<?php echo $user['email']; ?>'
+                    body: new URLSearchParams({
+                        token: token
                     })
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Limpiar sessionStorage
-                        sessionStorage.removeItem('planSeleccionado');
-                        sessionStorage.removeItem('precioSeleccionado');
-                        
                         // Redirigir a página de éxito
-                        window.location.href = '<?php echo BASE_URL; ?>success?subscription=' + data.subscription.id;
+                        window.location.href = data.redirect || '<?php echo BASE_URL; ?>mis-suscripciones';
                     } else {
                         alert('Error al procesar la suscripción: ' + (data.error || 'Error desconocido'));
                         document.getElementById('btnPagar').innerHTML = '<i class="fas fa-credit-card mr-2"></i>Proceder al Pago';
