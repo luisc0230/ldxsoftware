@@ -107,6 +107,12 @@ try {
                             </a>
                         </li>
                         <li class="flex justify-center w-full first:mt-5 md:first:mt-0 md:block md:w-auto">
+                            <a href="#suscripciones" class="flex items-center md:w-auto justify-center gap-2 md:px-4 md:py-2 hover:bg-white/5 md:rounded-2xl border border-transparent hover:border-white/10 transition-all min-h-[50px] md:text-base px-5 py-4 text-xl duration-300 w-full">
+                                <i class="fas fa-credit-card" aria-hidden="true"></i>
+                                Suscripciones
+                            </a>
+                        </li>
+                        <li class="flex justify-center w-full first:mt-5 md:first:mt-0 md:block md:w-auto">
                             <a href="#contacto" class="flex items-center md:w-auto justify-center gap-2 md:px-4 md:py-2 hover:bg-white/5 md:rounded-2xl border border-transparent hover:border-white/10 transition-all min-h-[50px] md:text-base px-5 py-4 text-xl duration-300 w-full">
                                 <i class="fas fa-envelope" aria-hidden="true"></i>
                                 Contacto
@@ -147,6 +153,9 @@ try {
 
         <!-- Include Trabajos Section -->
         <?php include '../app/includes/trabajos.php'; ?>
+
+        <!-- Include Suscripciones Section -->
+        <?php include '../app/includes/suscripciones.php'; ?>
 
         <!-- Include Contact Section -->
         <?php include '../app/includes/contact.php'; ?>

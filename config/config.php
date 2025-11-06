@@ -37,6 +37,16 @@ define('SMTP_PASSWORD', ''); // Set your email password
 define('SMTP_FROM_EMAIL', 'contacto@ldxsoftware.com.pe');
 define('SMTP_FROM_NAME', 'LDX Software');
 
+// Culqi Configuration (Payment Gateway)
+define('CULQI_PUBLIC_KEY', 'pk_test_pFFwfwNWeARhXrgN');
+define('CULQI_SECRET_KEY', 'sk_test_1JdA4a8tJsBlrCpG');
+define('CULQI_API_URL', 'https://api.culqi.com/v2/');
+
+// Google OAuth Configuration
+define('GOOGLE_CLIENT_ID', ''); // Set your Google Client ID
+define('GOOGLE_CLIENT_SECRET', ''); // Set your Google Client Secret
+define('GOOGLE_REDIRECT_URI', BASE_URL . 'auth/google/callback');
+
 // Security Configuration
 define('CSRF_TOKEN_NAME', 'ldx_csrf_token');
 define('SESSION_TIMEOUT', 3600); // 1 hour
