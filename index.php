@@ -30,6 +30,15 @@ try {
     } elseif ($uri === 'privacidad') {
         include 'privacidad.php';
         exit;
+    } elseif ($uri === 'mis-suscripciones') {
+        include 'mis-suscripciones.php';
+        exit;
+    } elseif ($uri === 'perfil') {
+        include 'perfil.php';
+        exit;
+    } elseif ($uri === 'checkout') {
+        include 'checkout.php';
+        exit;
     }
     
     // For other routes, show the main landing page
