@@ -216,6 +216,12 @@ try {
     } elseif ($uri === 'privacidad') {
         include 'privacidad.php';
         exit;
+    } elseif ($uri === 'politicas-devolucion') {
+        include 'politicas-devolucion.php';
+        exit;
+    } elseif ($uri === 'libro-reclamaciones') {
+        include 'libro-reclamaciones.php';
+        exit;
     } elseif ($uri === 'mis-suscripciones') {
         include 'mis-suscripciones.php';
         exit;
