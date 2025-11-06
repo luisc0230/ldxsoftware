@@ -18,12 +18,34 @@ try {
     $uri = $_SERVER['REQUEST_URI'];
     $uri = parse_url($uri, PHP_URL_PATH);
     
+    // Debug logging
+    error_log("=== INDEX.PHP REQUEST ===");
+    error_log("Original URI: " . $_SERVER['REQUEST_URI']);
+    error_log("Parsed URI: " . $uri);
+    
     // Remove base path dynamically
     $basePath = parse_url(BASE_URL, PHP_URL_PATH);
     $uri = str_replace($basePath, '', $uri);
     $uri = trim($uri, '/');
     
-    // Handle specific routes
+    error_log("Base path: " . $basePath);
+    error_log("Final URI: " . $uri);
+    
+    // Handle specific routes FIRST (before anything else)
+    
+    // Debug/Fix routes
+    if ($uri === 'fix-session.php' || $uri === 'fix-session') {
+        include __DIR__ . '/fix-session.php';
+        exit;
+    } elseif ($uri === 'test-db.php' || $uri === 'test-db') {
+        include __DIR__ . '/test-db.php';
+        exit;
+    } elseif ($uri === 'diagnostico-session.php' || $uri === 'diagnostico-session') {
+        include __DIR__ . '/diagnostico-session.php';
+        exit;
+    }
+    
+    // Regular routes
     if ($uri === 'terminos') {
         include 'terminos.php';
         exit;
@@ -38,12 +60,6 @@ try {
         exit;
     } elseif ($uri === 'checkout') {
         include 'checkout.php';
-        exit;
-    } elseif ($uri === 'test-db') {
-        include 'test-db.php';
-        exit;
-    } elseif ($uri === 'diagnostico-session') {
-        include 'diagnostico-session.php';
         exit;
     }
     
