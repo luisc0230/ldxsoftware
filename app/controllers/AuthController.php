@@ -67,8 +67,14 @@ class AuthController {
         // Guardar usuario en archivo JSON
         $this->saveUser($userInfo);
         
-        // Redirigir a página de checkout
-        header('Location: ' . BASE_URL . 'checkout');
+        // Verificar si hay un plan seleccionado en la sesión
+        if (isset($_SESSION['planSeleccionado']) && isset($_SESSION['precioSeleccionado'])) {
+            // Si hay plan seleccionado, ir a checkout
+            header('Location: ' . BASE_URL . 'checkout');
+        } else {
+            // Si no hay plan, volver al inicio
+            header('Location: ' . BASE_URL . '?login=success');
+        }
         exit;
     }
     

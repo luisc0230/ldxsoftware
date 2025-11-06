@@ -246,10 +246,26 @@ function cerrarModal() {
     document.getElementById('loginModal').classList.remove('flex');
 }
 
-function loginConGoogle() {
+async function loginConGoogle() {
     // Guardar plan seleccionado en sessionStorage
     sessionStorage.setItem('planSeleccionado', planSeleccionado);
     sessionStorage.setItem('precioSeleccionado', precioSeleccionado);
+    
+    // Guardar en sesión del servidor también
+    try {
+        await fetch('<?php echo BASE_URL; ?>api/session/set-plan', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                plan: planSeleccionado,
+                precio: precioSeleccionado
+            })
+        });
+    } catch (error) {
+        console.error('Error guardando plan:', error);
+    }
     
     // Redirigir a Google OAuth
     window.location.href = '<?php echo url('auth/google'); ?>';
