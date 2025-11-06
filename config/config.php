@@ -54,14 +54,17 @@ define('CONTROLLERS_PATH', APP_PATH . 'controllers/');
 define('MODELS_PATH', APP_PATH . 'models/');
 
 // Error Reporting (set to false in production)
-define('DEBUG_MODE', true);
+// IMPORTANT: Set to false when deploying to production!
+define('DEBUG_MODE', false);
 
 if (DEBUG_MODE) {
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
 } else {
-    error_reporting(0);
+    error_reporting(E_ALL);
     ini_set('display_errors', 0);
+    ini_set('log_errors', 1);
+    ini_set('error_log', APP_PATH . 'logs/error.log');
 }
 
 // Timezone
