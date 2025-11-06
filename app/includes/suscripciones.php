@@ -1,3 +1,8 @@
+<?php
+// Verificar si el usuario está logueado
+require_once __DIR__ . '/../controllers/AuthController.php';
+$isLoggedInSubs = AuthController::isAuthenticated();
+?>
 <!-- Suscripciones Section -->
 <section id="suscripciones" class="py-20 bg-gradient-to-b from-black via-gray-900 to-black">
     <div class="container mx-auto px-4">
@@ -224,13 +229,17 @@
 </div>
 
 <script>
+// Variable de PHP indicando si está logueado
+const isUserLoggedIn = <?php echo $isLoggedInSubs ? 'true' : 'false'; ?>;
+console.log('Usuario logueado (desde PHP):', isUserLoggedIn);
+
 let planIdSeleccionado = null;
 let planNombreSeleccionado = null;
 let precioSeleccionado = null;
 let tipoPagoSeleccionado = 'mensual';
 
 async function iniciarSuscripcion(planId, planNombre, precio, tipoPago = 'mensual') {
-    console.log('Iniciando suscripción:', {planId, planNombre, precio, tipoPago});
+    console.log('🎯 Iniciando suscripción:', {planId, planNombre, precio, tipoPago, isUserLoggedIn});
     
     planIdSeleccionado = planId;
     planNombreSeleccionado = planNombre;
@@ -244,6 +253,7 @@ async function iniciarSuscripcion(planId, planNombre, precio, tipoPago = 'mensua
     
     // Guardar en sesión del servidor
     try {
+        console.log('📡 Enviando request a API...');
         const response = await fetch('<?php echo BASE_URL; ?>api/iniciar-suscripcion.php', {
             method: 'POST',
             headers: {
@@ -257,25 +267,25 @@ async function iniciarSuscripcion(planId, planNombre, precio, tipoPago = 'mensua
         });
         
         const data = await response.json();
-        console.log('Respuesta del servidor:', data);
+        console.log('✅ Respuesta del servidor:', data);
         
         if (data.success) {
             if (data.logged_in) {
                 // Usuario ya está logueado, ir a checkout
-                console.log('Usuario logueado, redirigiendo a checkout');
+                console.log('✅ Usuario logueado, redirigiendo a checkout:', data.redirect);
                 window.location.href = data.redirect;
             } else {
                 // Usuario no logueado, mostrar modal para login
-                console.log('Usuario no logueado, mostrando modal');
+                console.log('ℹ️ Usuario no logueado, mostrando modal');
                 document.getElementById('loginModal').classList.remove('hidden');
                 document.getElementById('loginModal').classList.add('flex');
             }
         } else {
-            console.error('Error:', data.error);
+            console.error('❌ Error:', data.error);
             alert('Error al iniciar suscripción: ' + data.error);
         }
     } catch (error) {
-        console.error('Error guardando plan:', error);
+        console.error('❌ Error guardando plan:', error);
         alert('Error de conexión. Por favor intenta nuevamente.');
     }
 }

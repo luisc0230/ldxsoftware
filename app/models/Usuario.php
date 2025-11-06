@@ -20,16 +20,24 @@ class Usuario {
      * Crear o actualizar usuario desde Google OAuth
      */
     public function createOrUpdateFromGoogle($googleData) {
-        $googleId = $this->db->real_escape_string($googleData['id']);
-        $email = $this->db->real_escape_string($googleData['email']);
-        $nombre = $this->db->real_escape_string($googleData['name']);
-        $foto = isset($googleData['picture']) ? $this->db->real_escape_string($googleData['picture']) : null;
-        
-        // Verificar si el usuario ya existe
-        $stmt = $this->db->prepare("SELECT id FROM usuarios WHERE google_id = ? OR email = ?");
-        $stmt->bind_param("ss", $googleId, $email);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        try {
+            $googleId = $this->db->real_escape_string($googleData['id']);
+            $email = $this->db->real_escape_string($googleData['email']);
+            $nombre = $this->db->real_escape_string($googleData['name']);
+            $foto = isset($googleData['picture']) ? $this->db->real_escape_string($googleData['picture']) : null;
+            
+            error_log("createOrUpdateFromGoogle - Google ID: $googleId, Email: $email");
+            
+            // Verificar si el usuario ya existe
+            $stmt = $this->db->prepare("SELECT id FROM usuarios WHERE google_id = ? OR email = ?");
+            if (!$stmt) {
+                error_log("ERROR prepare: " . $this->db->error);
+                throw new Exception("Error al preparar consulta: " . $this->db->error);
+            }
+            
+            $stmt->bind_param("ss", $googleId, $email);
+            $stmt->execute();
+            $result = $stmt->get_result();
         
         if ($result->num_rows > 0) {
             // Usuario existe, actualizar último login
@@ -45,14 +53,30 @@ class Usuario {
         } else {
             // Usuario nuevo, insertar
             $insertStmt = $this->db->prepare("INSERT INTO usuarios (google_id, email, nombre, foto, fecha_registro, ultimo_login) VALUES (?, ?, ?, ?, NOW(), NOW())");
+            if (!$insertStmt) {
+                error_log("ERROR prepare insert: " . $this->db->error);
+                throw new Exception("Error al preparar inserción: " . $this->db->error);
+            }
+            
             $insertStmt->bind_param("ssss", $googleId, $email, $nombre, $foto);
-            $insertStmt->execute();
+            if (!$insertStmt->execute()) {
+                error_log("ERROR execute insert: " . $insertStmt->error);
+                throw new Exception("Error al ejecutar inserción: " . $insertStmt->error);
+            }
             
             $usuarioId = $this->db->insert_id;
             error_log("Usuario nuevo creado: ID $usuarioId - $email");
         }
         
-        return $this->getById($usuarioId);
+        $usuarioData = $this->getById($usuarioId);
+        error_log("Usuario retornado: " . json_encode($usuarioData));
+        return $usuarioData;
+        
+        } catch (Exception $e) {
+            error_log("EXCEPCIÓN en createOrUpdateFromGoogle: " . $e->getMessage());
+            error_log("Stack trace: " . $e->getTraceAsString());
+            return null;
+        }
     }
     
     /**

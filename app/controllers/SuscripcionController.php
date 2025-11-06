@@ -17,6 +17,11 @@ class SuscripcionController {
      * Guarda el plan seleccionado en la sesión
      */
     public function iniciarSuscripcion() {
+        error_log("=== iniciarSuscripcion() llamado ===");
+        error_log("REQUEST_METHOD: " . $_SERVER['REQUEST_METHOD']);
+        error_log("POST data: " . json_encode($_POST));
+        error_log("Session data: " . json_encode($_SESSION));
+        
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             http_response_code(405);
             echo json_encode(['error' => 'Método no permitido']);
@@ -27,7 +32,10 @@ class SuscripcionController {
         $tipoPago = isset($_POST['tipo_pago']) ? $_POST['tipo_pago'] : 'mensual';
         $precio = isset($_POST['precio']) ? floatval($_POST['precio']) : 0;
         
+        error_log("Datos recibidos: Plan ID=$planId, Tipo=$tipoPago, Precio=$precio");
+        
         if ($planId <= 0 || $precio <= 0) {
+            error_log("ERROR: Datos inválidos");
             http_response_code(400);
             echo json_encode(['error' => 'Datos inválidos']);
             exit;
@@ -38,23 +46,34 @@ class SuscripcionController {
         $_SESSION['tipoPagoSeleccionado'] = $tipoPago;
         $_SESSION['precioSeleccionado'] = $precio;
         
-        error_log("Plan seleccionado: Plan ID $planId, Tipo: $tipoPago, Precio: $precio");
+        error_log("Plan guardado en sesión: Plan ID $planId, Tipo: $tipoPago, Precio: $precio");
         
         // Verificar si el usuario está logueado
-        if (isset($_SESSION['user']) && $_SESSION['user']['logged_in']) {
+        $isLoggedIn = isset($_SESSION['user']) && isset($_SESSION['user']['logged_in']) && $_SESSION['user']['logged_in'] === true;
+        error_log("Usuario logueado: " . ($isLoggedIn ? 'SI' : 'NO'));
+        
+        if ($isLoggedIn) {
+            error_log("Usuario ID: " . ($_SESSION['user']['id'] ?? 'N/A'));
+            error_log("Usuario email: " . ($_SESSION['user']['email'] ?? 'N/A'));
+            
             // Usuario logueado, ir directo a checkout
-            echo json_encode([
+            $response = [
                 'success' => true,
                 'redirect' => BASE_URL . 'checkout',
-                'logged_in' => true
-            ]);
+                'logged_in' => true,
+                'user_id' => $_SESSION['user']['id'] ?? null
+            ];
+            error_log("Respuesta para usuario logueado: " . json_encode($response));
+            echo json_encode($response);
         } else {
             // Usuario no logueado, debe iniciar sesión
-            echo json_encode([
+            $response = [
                 'success' => true,
                 'redirect' => BASE_URL . 'auth/google',
                 'logged_in' => false
-            ]);
+            ];
+            error_log("Respuesta para usuario no logueado: " . json_encode($response));
+            echo json_encode($response);
         }
         exit;
     }
