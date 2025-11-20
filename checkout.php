@@ -35,7 +35,7 @@ $user = AuthController::getCurrentUser();
             <!-- Header -->
             <div class="text-center mb-12">
                 <a href="<?php echo BASE_URL; ?>" class="inline-block mb-6">
-                    <img src="<?php echo asset('images/logo.png'); ?>" alt="LDX Software" class="h-12 mx-auto">
+                    <img src="https://ldxsoftware.com.pe/assets/images/logo.png" alt="LDX Software" class="h-12 w-auto">
                 </a>
                 <h1 class="text-4xl font-bold text-white mb-2">Finalizar Suscripción</h1>
                 <p class="text-gray-400">Estás a un paso de comenzar tu transformación digital</p>
@@ -112,9 +112,14 @@ $user = AuthController::getCurrentUser();
             <!-- Términos y Condiciones -->
             <div class="mt-8 text-center text-gray-400 text-sm">
                 <p>Al continuar, aceptas nuestros 
-                    <a href="<?php echo url('terminos'); ?>" class="text-blue-400 hover:underline">Términos y Condiciones</a> y 
-                    <a href="<?php echo url('privacidad'); ?>" class="text-blue-400 hover:underline">Política de Privacidad</a>
+                    <a href="<?php echo url('terminos'); ?>" class="text-blue-400 hover:underline" target="_blank">Términos y Condiciones</a> y 
+                    <a href="<?php echo url('privacidad'); ?>" class="text-blue-400 hover:underline" target="_blank">Política de Privacidad</a>
                 </p>
+                <div class="mt-4">
+                    <a href="<?php echo BASE_URL; ?>" class="text-red-400 hover:text-red-300 text-sm transition-colors">
+                        <i class="fas fa-times mr-1"></i> Cancelar y volver
+                    </a>
+                </div>
             </div>
         </div>
     </div>
