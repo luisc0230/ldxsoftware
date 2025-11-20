@@ -4,87 +4,19 @@ $page_title = 'Términos y Condiciones - LDX Software';
 $page_description = 'Términos y condiciones de uso de los servicios de LDX Software';
 
 // Define access constant and include config
+// Define access constant and include config
 define('LDX_ACCESS', true);
 require_once __DIR__ . '/config/config.php';
-?>
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $page_title; ?></title>
-    <meta name="description" content="<?php echo $page_description; ?>">
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <script src="https://kit.fontawesome.com/6d85ddc2e8.js" crossorigin="anonymous"></script>
-    <link rel="icon" type="image/x-icon" href="<?php echo asset('images/logo.ico'); ?>">
-    <link rel="shortcut icon" type="image/x-icon" href="<?php echo asset('images/logo.ico'); ?>">
-    <style>
-        html { scroll-behavior: smooth; }
-    </style>
-</head>
+// Include header
+require_once __DIR__ . '/app/includes/header.php';
+?>
 <body class="bg-black text-white">
 
-<!-- Header -->
-<header role="banner" class="fixed top-0 left-0 right-0 backdrop-blur-md bg-black/20 w-full overflow-visible z-[99999] header-animate border-b border-white/10">
-    <div class="grid items-center justify-center md:justify-normal w-full grid-cols-[auto_1fr] mx-auto text-white gap-x-10 md:flex max-w-screen-full py-4">
-        <!-- Logo Section -->
-        <div class="md:flex-grow md:basis-0 flex justify-start">
-            <a href="<?php echo url(); ?>" class="ml-4 flex items-center gap-2.5 font-bold transition-transform duration-300 hover:scale-110" title="Ir a la página principal" aria-label="Ir a la página principal">
-                <img src="<?php echo asset('images/logo.png'); ?>" alt="LDX Software" class="h-8 w-auto">
-            </a>
-        </div>
-
-        <!-- Navigation -->
-        <nav aria-label="Navegación principal" id="header-navbar" class="col-span-full overflow-x-auto row-[2/3] grid grid-rows-[0fr] transition-[grid-template-rows] data-[open]:grid-rows-[1fr] md:justify-center md:flex group/nav">
-            <ul data-header-navbar="" class="flex flex-col items-center overflow-x-hidden overflow-y-hidden md:flex-row gap-x-2">
-                <li class="flex justify-center w-full first:mt-5 md:first:mt-0 md:block md:w-auto">
-                    <a href="<?php echo url(); ?>#hero" class="flex items-center md:w-auto justify-center gap-2 md:px-4 md:py-2 hover:bg-white/5 md:rounded-2xl border border-transparent hover:border-white/10 transition-all min-h-[50px] md:text-base px-5 py-4 text-xl duration-300 w-full">
-                        <i class="fas fa-home" aria-hidden="true"></i>
-                        Inicio
-                    </a>
-                </li>
-                <li class="flex justify-center w-full first:mt-5 md:first:mt-0 md:block md:w-auto">
-                    <a href="<?php echo url(); ?>#servicios" class="flex items-center md:w-auto justify-center gap-2 md:px-4 md:py-2 hover:bg-white/5 md:rounded-2xl border border-transparent hover:border-white/10 transition-all min-h-[50px] md:text-base px-5 py-4 text-xl duration-300 w-full">
-                        <i class="fas fa-cogs" aria-hidden="true"></i>
-                        Servicios
-                    </a>
-                </li>
-                <li class="flex justify-center w-full first:mt-5 md:first:mt-0 md:block md:w-auto">
-                    <a href="<?php echo url(); ?>#trabajos" class="flex items-center md:w-auto justify-center gap-2 md:px-4 md:py-2 hover:bg-white/5 md:rounded-2xl border border-transparent hover:border-white/10 transition-all min-h-[50px] md:text-base px-5 py-4 text-xl duration-300 w-full">
-                        <i class="fas fa-briefcase" aria-hidden="true"></i>
-                        Trabajos
-                    </a>
-                </li>
-                <li class="flex justify-center w-full first:mt-5 md:first:mt-0 md:block md:w-auto">
-                    <a href="<?php echo url(); ?>#contacto" class="flex items-center md:w-auto justify-center gap-2 md:px-4 md:py-2 hover:bg-white/5 md:rounded-2xl border border-transparent hover:border-white/10 transition-all min-h-[50px] md:text-base px-5 py-4 text-xl duration-300 w-full">
-                        <i class="fas fa-envelope" aria-hidden="true"></i>
-                        Contacto
-                    </a>
-                </li>
-            </ul>
-        </nav>
-
-        <!-- CTA and Mobile Menu -->
-        <div class="flex md:flex-grow md:basis-0 items-center gap-4 mr-4 ml-auto md:ml-0 justify-end">
-            <!-- CTA Button -->
-            <a href="<?php echo url(); ?>#contacto" class="hidden md:flex items-center gap-2 px-4 py-2 bg-white text-black hover:bg-gray-200 rounded-2xl transition-all font-semibold">
-                <i class="fas fa-rocket" aria-hidden="true"></i>
-                Cotizar Proyecto
-            </a>
-            
-            <!-- Mobile Menu Toggle -->
-            <button class="flex items-center justify-center py-2 md:hidden group" id="header-navbar-toggle" aria-controls="header-navbar" title="Mostrar Menú" aria-label="Mostrar menú" aria-expanded="false">
-                <div class="flex items-center justify-center p-2 cursor-pointer">
-                    <div class="flex flex-col gap-2">
-                        <span class="hamburger-line block h-0.5 w-8 origin-center rounded-full bg-white/80 transition-transform ease-in-out duration-300"></span>
-                        <span class="hamburger-line block h-0.5 w-8 origin-center rounded-full bg-white/80 transition-transform ease-in-out duration-300"></span>
-                    </div>
-                </div>
-            </button>
-        </div>
-    </div>
-</header>
+<?php
+// Include navbar
+require_once __DIR__ . '/app/includes/navbar.php';
+?>
 
 <main class="bg-black text-white min-h-screen pt-20 relative overflow-hidden">
     <!-- Background Pattern -->
