@@ -29,11 +29,16 @@ try {
         $userSubscriptions[] = [
             'id' => $sub['id'],
             'plan_type' => $sub['plan_nombre'],
+            'plan_descripcion' => $sub['plan_descripcion'] ?? 'Plan de suscripción',
             'status' => ($sub['estado'] === 'activa') ? 1 : (($sub['estado'] === 'pendiente') ? 0 : 2),
+            'estado_texto' => $sub['estado'],
             'amount' => $sub['precio_pagado'],
             'start_date' => $sub['fecha_inicio'],
             'next_billing' => $sub['fecha_fin'],
-            'tipo_pago' => $sub['tipo_pago']
+            'tipo_pago' => $sub['tipo_pago'],
+            'metodo_pago' => $sub['metodo_pago'] ?? 'No especificado',
+            'transaction_id' => $sub['transaction_id'] ?? 'N/A',
+            'created_at' => $sub['created_at'] ?? $sub['fecha_inicio']
         ];
     }
 } catch (Exception $e) {
@@ -126,11 +131,11 @@ try {
                         </div>
 
                         <div class="flex gap-3">
-                            <button class="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition-all">
+                            <button onclick="openSubscriptionModal(<?php echo htmlspecialchars(json_encode($subscription)); ?>)" class="flex-1 bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition-all">
                                 <i class="fas fa-eye mr-2"></i>
                                 Ver Detalles
                             </button>
-                            <button class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition-all">
+                            <button onclick="downloadInvoice(<?php echo $subscription['id']; ?>)" class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-4 rounded-lg transition-all" title="Descargar comprobante">
                                 <i class="fas fa-download"></i>
                             </button>
                         </div>
@@ -197,5 +202,202 @@ try {
             </div>
         </div>
     </div>
+
+    <!-- Modal de Detalles de Suscripción -->
+    <div id="subscriptionModal" class="hidden fixed inset-0 bg-black/80 backdrop-blur-sm z-[100000] flex items-center justify-center p-4">
+        <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto border border-gray-700 shadow-2xl">
+            <!-- Modal Header -->
+            <div class="sticky top-0 bg-gradient-to-r from-purple-900/50 to-blue-900/50 backdrop-blur-md border-b border-gray-700 p-6 flex items-center justify-between">
+                <div>
+                    <h2 id="modalPlanName" class="text-2xl font-bold text-white mb-1">Plan Premium</h2>
+                    <span id="modalStatus" class="inline-block px-3 py-1 rounded-full text-xs font-semibold">Activa</span>
+                </div>
+                <button onclick="closeSubscriptionModal()" class="text-gray-400 hover:text-white transition-colors">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+
+            <!-- Modal Body -->
+            <div class="p-6 space-y-6">
+                <!-- Información General -->
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fas fa-info-circle text-blue-400"></i>
+                        Información General
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-gray-800/50 rounded-lg p-4">
+                            <p class="text-gray-400 text-sm mb-1">ID de Suscripción</p>
+                            <p id="modalId" class="text-white font-semibold">#12345</p>
+                        </div>
+                        <div class="bg-gray-800/50 rounded-lg p-4">
+                            <p class="text-gray-400 text-sm mb-1">Tipo de Plan</p>
+                            <p id="modalPlanType" class="text-white font-semibold">Premium</p>
+                        </div>
+                        <div class="bg-gray-800/50 rounded-lg p-4">
+                            <p class="text-gray-400 text-sm mb-1">Monto</p>
+                            <p id="modalAmount" class="text-white font-semibold">S/ 99.00</p>
+                        </div>
+                        <div class="bg-gray-800/50 rounded-lg p-4">
+                            <p class="text-gray-400 text-sm mb-1">Tipo de Pago</p>
+                            <p id="modalTipoPago" class="text-white font-semibold">Mensual</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Fechas -->
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fas fa-calendar text-green-400"></i>
+                        Fechas Importantes
+                    </h3>
+                    <div class="grid md:grid-cols-2 gap-4">
+                        <div class="bg-gray-800/50 rounded-lg p-4">
+                            <p class="text-gray-400 text-sm mb-1">Fecha de Inicio</p>
+                            <p id="modalStartDate" class="text-white font-semibold">01/01/2024</p>
+                        </div>
+                        <div class="bg-gray-800/50 rounded-lg p-4">
+                            <p class="text-gray-400 text-sm mb-1">Próximo Cobro</p>
+                            <p id="modalNextBilling" class="text-white font-semibold">01/02/2024</p>
+                        </div>
+                        <div class="bg-gray-800/50 rounded-lg p-4">
+                            <p class="text-gray-400 text-sm mb-1">Fecha de Creación</p>
+                            <p id="modalCreatedAt" class="text-white font-semibold">01/01/2024</p>
+                        </div>
+                        <div class="bg-gray-800/50 rounded-lg p-4">
+                            <p class="text-gray-400 text-sm mb-1">Estado</p>
+                            <p id="modalEstadoTexto" class="text-white font-semibold">Activa</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Método de Pago -->
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fas fa-credit-card text-purple-400"></i>
+                        Método de Pago
+                    </h3>
+                    <div class="bg-gray-800/50 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <p class="text-gray-400 text-sm">Método</p>
+                            <p id="modalMetodoPago" class="text-white font-semibold">Tarjeta de Crédito</p>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <p class="text-gray-400 text-sm">ID de Transacción</p>
+                            <p id="modalTransactionId" class="text-white font-mono text-sm">TXN123456789</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Descripción del Plan -->
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fas fa-list text-yellow-400"></i>
+                        Descripción del Plan
+                    </h3>
+                    <div class="bg-gray-800/50 rounded-lg p-4">
+                        <p id="modalPlanDescripcion" class="text-gray-300">Plan de suscripción premium con todas las características incluidas.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer -->
+            <div class="sticky bottom-0 bg-gray-900/90 backdrop-blur-md border-t border-gray-700 p-6 flex gap-3">
+                <button onclick="downloadInvoiceFromModal()" class="flex-1 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-xl transition-all">
+                    <i class="fas fa-download mr-2"></i>
+                    Descargar Comprobante
+                </button>
+                <button onclick="closeSubscriptionModal()" class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-6 rounded-xl transition-all">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSubscriptionId = null;
+
+        // Abrir modal de suscripción
+        function openSubscriptionModal(subscription) {
+            currentSubscriptionId = subscription.id;
+            
+            // Actualizar contenido del modal
+            document.getElementById('modalPlanName').textContent = 'Plan ' + subscription.plan_type.charAt(0).toUpperCase() + subscription.plan_type.slice(1);
+            document.getElementById('modalId').textContent = '#' + subscription.id;
+            document.getElementById('modalPlanType').textContent = subscription.plan_type.charAt(0).toUpperCase() + subscription.plan_type.slice(1);
+            document.getElementById('modalAmount').textContent = 'S/ ' + parseFloat(subscription.amount).toFixed(2);
+            document.getElementById('modalTipoPago').textContent = subscription.tipo_pago || 'No especificado';
+            document.getElementById('modalStartDate').textContent = formatDate(subscription.start_date);
+            document.getElementById('modalNextBilling').textContent = formatDate(subscription.next_billing);
+            document.getElementById('modalCreatedAt').textContent = formatDate(subscription.created_at);
+            document.getElementById('modalEstadoTexto').textContent = subscription.estado_texto.charAt(0).toUpperCase() + subscription.estado_texto.slice(1);
+            document.getElementById('modalMetodoPago').textContent = subscription.metodo_pago || 'No especificado';
+            document.getElementById('modalTransactionId').textContent = subscription.transaction_id || 'N/A';
+            document.getElementById('modalPlanDescripcion').textContent = subscription.plan_descripcion || 'Plan de suscripción';
+            
+            // Actualizar badge de estado
+            const statusBadge = document.getElementById('modalStatus');
+            const statusColors = {
+                0: { bg: 'bg-yellow-500/20', text: 'text-yellow-400', border: 'border-yellow-500/30', label: 'Pendiente' },
+                1: { bg: 'bg-green-500/20', text: 'text-green-400', border: 'border-green-500/30', label: 'Activa' },
+                2: { bg: 'bg-red-500/20', text: 'text-red-400', border: 'border-red-500/30', label: 'Cancelada' }
+            };
+            const status = statusColors[subscription.status] || statusColors[0];
+            statusBadge.className = `inline-block px-3 py-1 rounded-full text-xs font-semibold border ${status.bg} ${status.text} ${status.border}`;
+            statusBadge.textContent = status.label;
+            
+            // Mostrar modal
+            document.getElementById('subscriptionModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Cerrar modal
+        function closeSubscriptionModal() {
+            document.getElementById('subscriptionModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+            currentSubscriptionId = null;
+        }
+
+        // Cerrar modal al hacer click fuera
+        document.getElementById('subscriptionModal')?.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeSubscriptionModal();
+            }
+        });
+
+        // Cerrar modal con tecla ESC
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && !document.getElementById('subscriptionModal').classList.contains('hidden')) {
+                closeSubscriptionModal();
+            }
+        });
+
+        // Descargar factura
+        function downloadInvoice(subscriptionId) {
+            // Aquí puedes implementar la lógica para descargar la factura
+            // Por ahora, mostraremos un mensaje
+            alert('Descargando comprobante de la suscripción #' + subscriptionId + '\n\nEsta funcionalidad se conectará con el sistema de facturación.');
+            
+            // Ejemplo de implementación real:
+            // window.location.href = '<?php echo BASE_URL; ?>api/download-invoice.php?subscription_id=' + subscriptionId;
+        }
+
+        // Descargar factura desde el modal
+        function downloadInvoiceFromModal() {
+            if (currentSubscriptionId) {
+                downloadInvoice(currentSubscriptionId);
+            }
+        }
+
+        // Formatear fecha
+        function formatDate(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+    </script>
 </body>
 </html>
