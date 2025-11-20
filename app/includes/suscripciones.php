@@ -2,6 +2,28 @@
 // Verificar si el usuario está logueado
 require_once __DIR__ . '/../controllers/AuthController.php';
 $isLoggedInSubs = AuthController::isAuthenticated();
+
+// Obtener planes desde la base de datos
+require_once __DIR__ . '/../models/Database.php';
+$planes = [];
+try {
+    $db = Database::getInstance()->getConnection();
+    $stmt = $db->prepare("SELECT * FROM planes WHERE estado = 'activo' ORDER BY precio_mensual ASC");
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    while ($row = $result->fetch_assoc()) {
+        $planes[$row['nombre']] = $row;
+    }
+} catch (Exception $e) {
+    error_log("Error al cargar planes: " . $e->getMessage());
+    // Valores por defecto en caso de error
+    $planes = [
+        'Básico' => ['id' => 1, 'nombre' => 'Básico', 'descripcion' => 'Plan básico para empezar', 'precio_mensual' => 29.00, 'precio_anual' => 290.00, 'caracteristicas' => 'Hosting básico, 1 dominio, Soporte email'],
+        'Profesional' => ['id' => 2, 'nombre' => 'Profesional', 'descripcion' => 'Plan para profesionales', 'precio_mensual' => 59.00, 'precio_anual' => 590.00, 'caracteristicas' => 'Hosting avanzado, 5 dominios, Soporte prioritario'],
+        'Empresarial' => ['id' => 3, 'nombre' => 'Empresarial', 'descripcion' => 'Plan para empresas', 'precio_mensual' => 99.00, 'precio_anual' => 990.00, 'caracteristicas' => 'Hosting ilimitado, Dominios ilimitados, Soporte 24/7']
+    ];
+}
 ?>
 <!-- Suscripciones Section -->
 <section id="suscripciones" class="py-20 bg-gradient-to-b from-black via-gray-900 to-black">
@@ -25,14 +47,14 @@ $isLoggedInSubs = AuthController::isAuthenticated();
                     <div class="inline-block p-3 bg-blue-500/10 rounded-full mb-4">
                         <i class="fas fa-rocket text-4xl text-blue-400"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-white mb-2">Plan Básico</h3>
-                    <p class="text-gray-400">Perfecto para empezar</p>
+                    <h3 class="text-2xl font-bold text-white mb-2">Plan <?php echo htmlspecialchars($planes['Básico']['nombre']); ?></h3>
+                    <p class="text-gray-400"><?php echo htmlspecialchars($planes['Básico']['descripcion']); ?></p>
                 </div>
                 
                 <div class="text-center mb-8">
                     <div class="flex items-baseline justify-center">
                         <span class="text-gray-400 text-xl">S/</span>
-                        <span class="text-5xl font-bold text-white">99</span>
+                        <span class="text-5xl font-bold text-white"><?php echo number_format($planes['Básico']['precio_mensual'], 0); ?></span>
                         <span class="text-gray-400 ml-2">/mes</span>
                     </div>
                 </div>
@@ -60,7 +82,7 @@ $isLoggedInSubs = AuthController::isAuthenticated();
                     </li>
                 </ul>
 
-                <button onclick="iniciarSuscripcion(1, 'basico', 29, 'mensual')" 
+                <button onclick="iniciarSuscripcion(<?php echo $planes['Básico']['id']; ?>, 'basico', <?php echo $planes['Básico']['precio_mensual']; ?>, 'mensual')" 
                         class="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105">
                     Suscribirse Ahora
                 </button>
@@ -79,14 +101,14 @@ $isLoggedInSubs = AuthController::isAuthenticated();
                     <div class="inline-block p-3 bg-purple-500/10 rounded-full mb-4">
                         <i class="fas fa-star text-4xl text-purple-400"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-white mb-2">Plan Profesional</h3>
-                    <p class="text-gray-300">Para negocios en crecimiento</p>
+                    <h3 class="text-2xl font-bold text-white mb-2">Plan <?php echo htmlspecialchars($planes['Profesional']['nombre']); ?></h3>
+                    <p class="text-gray-300"><?php echo htmlspecialchars($planes['Profesional']['descripcion']); ?></p>
                 </div>
                 
                 <div class="text-center mb-8">
                     <div class="flex items-baseline justify-center">
                         <span class="text-gray-300 text-xl">S/</span>
-                        <span class="text-5xl font-bold text-white">199</span>
+                        <span class="text-5xl font-bold text-white"><?php echo number_format($planes['Profesional']['precio_mensual'], 0); ?></span>
                         <span class="text-gray-300 ml-2">/mes</span>
                     </div>
                 </div>
@@ -118,7 +140,7 @@ $isLoggedInSubs = AuthController::isAuthenticated();
                     </li>
                 </ul>
 
-                <button onclick="iniciarSuscripcion(2, 'profesional', 59, 'mensual')" 
+                <button onclick="iniciarSuscripcion(<?php echo $planes['Profesional']['id']; ?>, 'profesional', <?php echo $planes['Profesional']['precio_mensual']; ?>, 'mensual')" 
                         class="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg shadow-purple-500/50">
                     Suscribirse Ahora
                 </button>
@@ -130,14 +152,14 @@ $isLoggedInSubs = AuthController::isAuthenticated();
                     <div class="inline-block p-3 bg-yellow-500/10 rounded-full mb-4">
                         <i class="fas fa-crown text-4xl text-yellow-400"></i>
                     </div>
-                    <h3 class="text-2xl font-bold text-white mb-2">Plan Empresarial</h3>
-                    <p class="text-gray-400">Solución completa</p>
+                    <h3 class="text-2xl font-bold text-white mb-2">Plan <?php echo htmlspecialchars($planes['Empresarial']['nombre']); ?></h3>
+                    <p class="text-gray-400"><?php echo htmlspecialchars($planes['Empresarial']['descripcion']); ?></p>
                 </div>
                 
                 <div class="text-center mb-8">
                     <div class="flex items-baseline justify-center">
                         <span class="text-gray-400 text-xl">S/</span>
-                        <span class="text-5xl font-bold text-white">399</span>
+                        <span class="text-5xl font-bold text-white"><?php echo number_format($planes['Empresarial']['precio_mensual'], 0); ?></span>
                         <span class="text-gray-400 ml-2">/mes</span>
                     </div>
                 </div>
@@ -173,7 +195,7 @@ $isLoggedInSubs = AuthController::isAuthenticated();
                     </li>
                 </ul>
 
-                <button onclick="iniciarSuscripcion(3, 'empresarial', 99, 'mensual')" 
+                <button onclick="iniciarSuscripcion(<?php echo $planes['Empresarial']['id']; ?>, 'empresarial', <?php echo $planes['Empresarial']['precio_mensual']; ?>, 'mensual')" 
                         class="w-full bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105">
                     Suscribirse Ahora
                 </button>
