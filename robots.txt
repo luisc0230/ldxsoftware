@@ -1,24 +1,66 @@
 <?php
 // Dynamic robots.txt generation
 define('LDX_ACCESS', true);
-require_once '../config/config.php';
+require_once __DIR__ . '/config/config.php';
 
 header('Content-Type: text/plain; charset=utf-8');
 ?>
+# Robots.txt for LDX Software
+# https://ldxsoftware.com.pe
+
+# Allow all search engines and AI crawlers
 User-agent: *
 Allow: /
 
-# Sitemap
+# Specific rules for AI crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+# Sitemap location
 Sitemap: <?php echo url('sitemap.xml'); ?>
 
-# Disallow admin areas (if any)
+# Disallow sensitive areas
 Disallow: /app/
 Disallow: /config/
 Disallow: /vendor/
+Disallow: /database/
 Disallow: /*.json$
+Disallow: /*.sql$
+Disallow: /.git/
+Disallow: /.env
 
 # Allow important assets
 Allow: /assets/
+Allow: /assets/images/
+Allow: /assets/css/
+Allow: /assets/js/
 
-# Crawl delay (optional)
+# Allow API endpoints for documentation
+Allow: /api/
+
+# Crawl delay (be nice to servers)
 Crawl-delay: 1
+
+# Additional information for AI understanding
+# Company: LDX Software
+# Services: Web Development, Mobile Apps, Automation, E-commerce
+# Location: Peru
+# Contact: Available through website contact form

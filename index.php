@@ -239,18 +239,179 @@ try {
     // For other routes, show the main landing page
     ?>
     <!DOCTYPE html>
-    <html lang="es">
+    <html lang="es" itemscope itemtype="https://schema.org/Organization">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>LDX SOFTWARE</title>
-        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-        <script src="https://kit.fontawesome.com/6d85ddc2e8.js" crossorigin="anonymous"></script>
+        
+        <!-- Primary Meta Tags -->
+        <title>LDX Software - Desarrollo Web, Aplicaciones y Automatizaciones en Perú</title>
+        <meta name="title" content="LDX Software - Desarrollo Web, Aplicaciones y Automatizaciones en Perú">
+        <meta name="description" content="LDX Software es una empresa peruana especializada en desarrollo de páginas web, aplicaciones móviles, sistemas de automatización, e-commerce y soluciones digitales personalizadas. Transformamos ideas en realidad digital.">
+        <meta name="keywords" content="desarrollo web perú, páginas web, aplicaciones móviles, automatizaciones, e-commerce, ldx software, desarrollo de software, diseño web, sistemas web, apps android, apps ios, hosting, dominios, seo, marketing digital">
+        <meta name="author" content="LDX Software">
+        <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+        <meta name="language" content="Spanish">
+        <meta name="revisit-after" content="7 days">
+        <meta name="rating" content="general">
+        
+        <!-- Canonical URL -->
+        <link rel="canonical" href="<?php echo BASE_URL; ?>">
+        
+        <!-- Open Graph / Facebook -->
+        <meta property="og:type" content="website">
+        <meta property="og:url" content="<?php echo BASE_URL; ?>">
+        <meta property="og:title" content="LDX Software - Desarrollo Web, Aplicaciones y Automatizaciones">
+        <meta property="og:description" content="Empresa peruana especializada en desarrollo de páginas web, aplicaciones móviles, sistemas de automatización y soluciones digitales. Transformamos tus ideas en realidad.">
+        <meta property="og:image" content="<?php echo BASE_URL; ?>assets/images/logo.png">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="630">
+        <meta property="og:site_name" content="LDX Software">
+        <meta property="og:locale" content="es_PE">
+        
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:url" content="<?php echo BASE_URL; ?>">
+        <meta name="twitter:title" content="LDX Software - Desarrollo Web y Aplicaciones">
+        <meta name="twitter:description" content="Desarrollo de páginas web, aplicaciones móviles, automatizaciones y soluciones digitales en Perú.">
+        <meta name="twitter:image" content="<?php echo BASE_URL; ?>assets/images/logo.png">
+        
+        <!-- Geo Tags -->
+        <meta name="geo.region" content="PE">
+        <meta name="geo.placename" content="Perú">
+        
+        <!-- Favicon -->
         <link rel="icon" type="image/x-icon" href="<?php echo asset('images/logo.ico'); ?>">
         <link rel="shortcut icon" type="image/x-icon" href="<?php echo asset('images/logo.ico'); ?>">
+        <link rel="apple-touch-icon" href="<?php echo asset('images/logo.png'); ?>">
+        
+        <!-- Schema.org Markup for Organization -->
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "LDX Software",
+            "alternateName": "LDX",
+            "url": "<?php echo BASE_URL; ?>",
+            "logo": "<?php echo BASE_URL; ?>assets/images/logo.png",
+            "description": "LDX Software es una empresa peruana especializada en desarrollo de páginas web, aplicaciones móviles, sistemas de automatización, e-commerce y soluciones digitales personalizadas.",
+            "address": {
+                "@type": "PostalAddress",
+                "addressCountry": "PE",
+                "addressLocality": "Perú"
+            },
+            "contactPoint": {
+                "@type": "ContactPoint",
+                "contactType": "customer service",
+                "availableLanguage": ["Spanish", "English"]
+            },
+            "sameAs": [
+                "https://github.com/luisc0230/ldxsoftware"
+            ],
+            "foundingDate": "2024",
+            "slogan": "Transformamos ideas en realidad digital",
+            "knowsAbout": [
+                "Desarrollo Web",
+                "Aplicaciones Móviles",
+                "Automatizaciones",
+                "E-commerce",
+                "Sistemas Web",
+                "Diseño Web",
+                "SEO",
+                "Marketing Digital",
+                "Hosting",
+                "Dominios"
+            ]
+        }
+        </script>
+        
+        <!-- Schema.org Markup for Services -->
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "Service",
+            "serviceType": "Desarrollo de Software",
+            "provider": {
+                "@type": "Organization",
+                "name": "LDX Software"
+            },
+            "areaServed": {
+                "@type": "Country",
+                "name": "Perú"
+            },
+            "hasOfferCatalog": {
+                "@type": "OfferCatalog",
+                "name": "Servicios de Desarrollo",
+                "itemListElement": [
+                    {
+                        "@type": "Offer",
+                        "itemOffered": {
+                            "@type": "Service",
+                            "name": "Desarrollo de Páginas Web",
+                            "description": "Creación de sitios web profesionales, responsivos y optimizados para SEO"
+                        }
+                    },
+                    {
+                        "@type": "Offer",
+                        "itemOffered": {
+                            "@type": "Service",
+                            "name": "Aplicaciones Móviles",
+                            "description": "Desarrollo de apps nativas y multiplataforma para Android e iOS"
+                        }
+                    },
+                    {
+                        "@type": "Offer",
+                        "itemOffered": {
+                            "@type": "Service",
+                            "name": "Automatizaciones",
+                            "description": "Sistemas de automatización de procesos empresariales y workflows"
+                        }
+                    },
+                    {
+                        "@type": "Offer",
+                        "itemOffered": {
+                            "@type": "Service",
+                            "name": "E-commerce",
+                            "description": "Tiendas online completas con pasarelas de pago integradas"
+                        }
+                    },
+                    {
+                        "@type": "Offer",
+                        "itemOffered": {
+                            "@type": "Service",
+                            "name": "Sistemas Web Personalizados",
+                            "description": "Desarrollo de sistemas web a medida según necesidades específicas"
+                        }
+                    }
+                ]
+            }
+        }
+        </script>
+        
+        <!-- Schema.org Markup for WebSite -->
+        <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "LDX Software",
+            "url": "<?php echo BASE_URL; ?>",
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": "<?php echo BASE_URL; ?>?s={search_term_string}",
+                "query-input": "required name=search_term_string"
+            }
+        }
+        </script>
+        
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+        
+        <!-- Font Awesome -->
+        <script src="https://kit.fontawesome.com/6d85ddc2e8.js" crossorigin="anonymous"></script>
     
         <!-- Swiper CSS -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+        
         <style>
             html { scroll-behavior: smooth; }
             
