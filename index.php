@@ -213,6 +213,9 @@ try {
     if ($uri === 'terminos') {
         include 'terminos.php';
         exit;
+    } elseif ($uri === 'acerca') {
+        include 'acerca.php';
+        exit;
     } elseif ($uri === 'privacidad') {
         include 'privacidad.php';
         exit;
@@ -556,9 +559,6 @@ try {
 
         <!-- Include Hero Section -->
         <?php include __DIR__ . '/app/includes/hero.php'; ?>
-
-        <!-- Include About Section -->
-        <?php include __DIR__ . '/app/includes/acerca.php'; ?>
 
         <!-- Include Description Section -->
         <?php include __DIR__ . '/app/includes/descripcion.php'; ?>

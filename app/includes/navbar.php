@@ -28,12 +28,6 @@ $user = AuthController::getCurrentUser();
                     </a>
                 </li>
                 <li class="flex justify-center w-full first:mt-5 md:first:mt-0 md:block md:w-auto">
-                    <a href="<?php echo BASE_URL; ?>#acerca" class="flex items-center md:w-auto justify-center gap-2 md:px-4 md:py-2 hover:bg-white/5 md:rounded-2xl border border-transparent hover:border-white/10 transition-all min-h-[50px] md:text-base px-5 py-4 text-xl duration-300 w-full">
-                        <i class="fas fa-info-circle" aria-hidden="true"></i>
-                        Acerca de
-                    </a>
-                </li>
-                <li class="flex justify-center w-full first:mt-5 md:first:mt-0 md:block md:w-auto">
                     <a href="<?php echo BASE_URL; ?>#servicios" class="flex items-center md:w-auto justify-center gap-2 md:px-4 md:py-2 hover:bg-white/5 md:rounded-2xl border border-transparent hover:border-white/10 transition-all min-h-[50px] md:text-base px-5 py-4 text-xl duration-300 w-full">
                         <i class="fas fa-cogs" aria-hidden="true"></i>
                         Servicios

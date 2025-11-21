@@ -23,6 +23,9 @@
         
         <!-- Links -->
         <div class="flex flex-wrap justify-center gap-6 mb-6 text-gray-400">
+            <a href="https://ldxsoftware.com.pe/acerca" class="hover:text-white transition-colors duration-300">
+                Acerca de
+            </a>
             <a href="https://ldxsoftware.com.pe/terminos" class="hover:text-white transition-colors duration-300">
                 Términos y Condiciones
             </a>
