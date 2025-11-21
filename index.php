@@ -557,6 +557,9 @@ try {
         <!-- Include Hero Section -->
         <?php include __DIR__ . '/app/includes/hero.php'; ?>
 
+        <!-- Include About Section -->
+        <?php include __DIR__ . '/app/includes/acerca.php'; ?>
+
         <!-- Include Description Section -->
         <?php include __DIR__ . '/app/includes/descripcion.php'; ?>
 
