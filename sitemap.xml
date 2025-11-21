@@ -1,78 +1,87 @@
-<?php
-// Dynamic sitemap generation
-define('LDX_ACCESS', true);
-require_once __DIR__ . '/config/config.php';
-
-header('Content-Type: application/xml; charset=utf-8');
-echo '<?xml version="1.0" encoding="UTF-8"?>';
-?>
+<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
         xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
     <!-- Homepage -->
     <url>
-        <loc><?php echo BASE_URL; ?></loc>
-        <lastmod><?php echo date('Y-m-d'); ?></lastmod>
+        <loc>https://ldxsoftware.com.pe/</loc>
+        <lastmod>2025-11-21</lastmod>
         <changefreq>daily</changefreq>
         <priority>1.0</priority>
         <image:image>
-            <image:loc><?php echo BASE_URL; ?>assets/images/logo.png</image:loc>
+            <image:loc>https://ldxsoftware.com.pe/assets/images/logo.png</image:loc>
             <image:title>LDX Software Logo</image:title>
         </image:image>
     </url>
     
     <!-- Services Section -->
     <url>
-        <loc><?php echo BASE_URL; ?>#servicios</loc>
-        <lastmod><?php echo date('Y-m-d'); ?></lastmod>
+        <loc>https://ldxsoftware.com.pe/#servicios</loc>
+        <lastmod>2025-11-21</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.9</priority>
     </url>
     
     <!-- Subscriptions Section -->
     <url>
-        <loc><?php echo BASE_URL; ?>#suscripciones</loc>
-        <lastmod><?php echo date('Y-m-d'); ?></lastmod>
+        <loc>https://ldxsoftware.com.pe/#suscripciones</loc>
+        <lastmod>2025-11-21</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.9</priority>
     </url>
     
     <!-- Contact Section -->
     <url>
-        <loc><?php echo BASE_URL; ?>#contacto</loc>
-        <lastmod><?php echo date('Y-m-d'); ?></lastmod>
+        <loc>https://ldxsoftware.com.pe/#contacto</loc>
+        <lastmod>2025-11-21</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.8</priority>
     </url>
     
     <!-- Terms and Conditions -->
     <url>
-        <loc><?php echo url('terminos'); ?></loc>
-        <lastmod><?php echo date('Y-m-d'); ?></lastmod>
+        <loc>https://ldxsoftware.com.pe/terminos</loc>
+        <lastmod>2025-11-21</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
     </url>
     
     <!-- Privacy Policy -->
     <url>
-        <loc><?php echo url('privacidad'); ?></loc>
-        <lastmod><?php echo date('Y-m-d'); ?></lastmod>
+        <loc>https://ldxsoftware.com.pe/privacidad</loc>
+        <lastmod>2025-11-21</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
     </url>
     
     <!-- Return Policy -->
     <url>
-        <loc><?php echo url('politicas-devolucion'); ?></loc>
-        <lastmod><?php echo date('Y-m-d'); ?></lastmod>
+        <loc>https://ldxsoftware.com.pe/politicas-devolucion</loc>
+        <lastmod>2025-11-21</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
     </url>
     
     <!-- Complaints Book -->
     <url>
-        <loc><?php echo url('libro-reclamaciones'); ?></loc>
-        <lastmod><?php echo date('Y-m-d'); ?></lastmod>
+        <loc>https://ldxsoftware.com.pe/libro-reclamaciones</loc>
+        <lastmod>2025-11-21</lastmod>
         <changefreq>monthly</changefreq>
         <priority>0.5</priority>
+    </url>
+    
+    <!-- My Subscriptions -->
+    <url>
+        <loc>https://ldxsoftware.com.pe/mis-suscripciones</loc>
+        <lastmod>2025-11-21</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+    
+    <!-- Profile -->
+    <url>
+        <loc>https://ldxsoftware.com.pe/perfil</loc>
+        <lastmod>2025-11-21</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
     </url>
 </urlset>
