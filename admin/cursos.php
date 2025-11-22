@@ -88,77 +88,60 @@ try {
             </div>
         <?php endif; ?>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <?php if (empty($cursos)): ?>
-                <div class="col-span-full p-8 text-center text-gray-500 bg-gray-800 rounded-xl border border-gray-700">
-                    No hay cursos registrados o no se pudo conectar a la base de datos.
-                </div>
-            <?php else: ?>
-                <?php foreach ($cursos as $curso): ?>
-                    <article class="group relative overflow-hidden rounded-xl border border-white/10 bg-[#0D1828] transition hover:contrast-110 before:left-1/2 before:bottom-0 before:-translate-x-1/2 before:w-full before:h-full before:bg-black before:absolute before:translate-y-full hover:before:translate-y-1/2 before:-z-10 before:transition before:duration-200 before:mask-t-from-70% h-full shadow-lg min-h-[250px]">
-                        
-                        <!-- Admin Controls -->
-                        <div class="absolute top-2 left-2 z-30 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                            <a href="<?php echo url('admin/cursos/editar/' . $curso['id']); ?>" class="bg-black/70 hover:bg-blue-600 text-white p-1.5 rounded-lg backdrop-blur-sm transition-colors text-xs flex items-center justify-center w-8 h-8" title="Editar">
-                                <i class="fas fa-edit" aria-hidden="true"></i>
-                            </a>
-                            <a href="?delete_id=<?php echo $curso['id']; ?>" onclick="return confirm('¿Estás seguro de eliminar este curso?')" class="bg-black/70 hover:bg-red-600 text-white p-1.5 rounded-lg backdrop-blur-sm transition-colors text-xs flex items-center justify-center w-8 h-8" title="Eliminar">
-                                <i class="fas fa-trash" aria-hidden="true"></i>
-                            </a>
-                        </div>
-                        
-                        <a href="<?php echo url('curso/' . ($curso['slug'] ?? $curso['id'])); ?>" class="flex aspect-video flex-col h-full p-2 relative z-10">
-                            
-                            <!-- Badges (Top Right) -->
-                            <div class="absolute top-2 right-2 opacity-100 transition inline-flex items-center gap-2 flex-wrap group-hover:opacity-0 group-hover:-translate-y-1">
-                                <?php if ($curso['es_gratuito']): ?>
-                                    <span class="relative isolate inline-flex items-center gap-1 overflow-hidden text-center font-medium whitespace-nowrap transition-all duration-300 rounded-lg shadow-[0_2px_8px_rgba(59,130,246,0.35),0_0_0_1px_theme(colors.white/10%)] bg-gradient-to-br from-blue-500 via-blue-400 to-blue-500 border border-blue-300/50 text-white backdrop-blur-sm px-2.5 py-1 text-xs">
-                                        <i class="fas fa-gift text-[10px]" aria-hidden="true"></i> <span class="relative z-10 font-bold">Gratis</span>
-                                    </span>
-                                <?php else: ?>
-                                    <span class="relative isolate inline-flex items-center gap-1 overflow-hidden text-center font-medium whitespace-nowrap transition-all duration-300 rounded-lg shadow-[0_2px_8px_rgba(59,130,246,0.35),0_0_0_1px_theme(colors.white/10%)] bg-gradient-to-br from-purple-500 via-purple-400 to-purple-500 border border-purple-300/50 text-white backdrop-blur-sm px-2.5 py-1 text-xs">
-                                        <i class="fas fa-crown text-[10px]" aria-hidden="true"></i> <span class="relative z-10 font-bold">Premium</span>
-                                    </span>
-                                <?php endif; ?>
-                            </div>
-
-                            <!-- Background Image -->
-                            <img src="<?php echo htmlspecialchars($curso['imagen_url'] ?? 'assets/images/logo.png'); ?>" class="absolute inset-0 -z-20 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" alt="<?php echo htmlspecialchars($curso['titulo']); ?>" onerror="this.src='<?php echo asset('assets/images/logo.png'); ?>'">
-                            
-                            <!-- Gradient Overlay -->
-                            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent -z-10"></div>
-
-                            <div class="opacity-100 flex transition flex-col gap-2 flex-1"></div>
-
-                            <!-- Bottom Content (Hover Reveal) -->
-                            <div class="flex flex-wrap items-end justify-between mt-8 transition translate-y-1 opacity-0 duration-300 group-hover:opacity-100 group-hover:translate-y-0">
-                                <h2 class="mt-auto text-shadow-lg text-white leading-snug font-medium text-balance max-w-[28ch] text-sm mb-2 ml-1">
+        <div class="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 shadow-xl">
+            <table class="w-full text-left text-gray-300">
+                <thead class="bg-gray-700/50 text-gray-400 uppercase text-sm">
+                    <tr>
+                        <th class="p-4">ID</th>
+                        <th class="p-4">Título</th>
+                        <th class="p-4">Precio</th>
+                        <th class="p-4">Estado</th>
+                        <th class="p-4 text-right">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-700">
+                    <?php if (empty($cursos)): ?>
+                        <tr>
+                            <td colspan="5" class="p-8 text-center text-gray-500">
+                                No hay cursos registrados o no se pudo conectar a la base de datos.
+                            </td>
+                        </tr>
+                    <?php else: ?>
+                        <?php foreach ($cursos as $curso): ?>
+                        <tr class="hover:bg-gray-700/30 transition-colors">
+                            <td class="p-4 font-mono text-sm text-gray-500">#<?php echo $curso['id']; ?></td>
+                            <td class="p-4 font-semibold text-white">
+                                <div class="flex items-center gap-3">
+                                    <?php if ($curso['imagen_url']): ?>
+                                        <img src="<?php echo str_starts_with($curso['imagen_url'], 'http') ? $curso['imagen_url'] : asset($curso['imagen_url']); ?>" 
+                                             class="w-10 h-10 rounded object-cover bg-gray-700" 
+                                             alt=""
+                                             onerror="this.src='<?php echo asset('images/logo.png'); ?>'">
+                                    <?php endif; ?>
                                     <?php echo htmlspecialchars($curso['titulo']); ?>
-                                </h2>
-                                
-                                <div class="flex flex-wrap items-center justify-between w-full">
-                                    <div>
-                                        <div class="flex items-center gap-4 text-sm text-gray-300 flex-wrap">
-                                            <p class="flex items-center gap-1 text-xs">
-                                                <span class="p-1 aspect-square border border-white/10 bg-white/5 rounded-full flex items-center justify-center w-5 h-5">
-                                                    <i class="far fa-clock text-[10px]" aria-hidden="true"></i>
-                                                </span>
-                                                <span><?php echo htmlspecialchars($curso['duracion'] ?? '0h 0m'); ?></span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="group/btn relative isolate inline-flex items-center justify-center overflow-hidden text-center font-semibold transition-all duration-300 rounded-lg border hover:bg-white/10 shadow-sm h-8 px-3 text-xs w-auto text-white border-white/30 group-hover:scale-105">
-                                        <span class="flex items-center gap-1.5">
-                                            <i class="fas fa-play text-[10px]" aria-hidden="true"></i> Ir al curso
-                                        </span>
-                                    </div>
                                 </div>
-                            </div>
-                        </a>
-                    </article>
-                <?php endforeach; ?>
-            <?php endif; ?>
+                            </td>
+                            <td class="p-4">
+                                <?php echo $curso['es_gratuito'] ? '<span class="text-green-400 font-bold">Gratis</span>' : 'S/ ' . number_format($curso['precio'], 2); ?>
+                            </td>
+                            <td class="p-4">
+                                <span class="px-2 py-1 rounded text-xs font-bold <?php echo $curso['estado'] === 'activo' ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'; ?>">
+                                    <?php echo strtoupper($curso['estado']); ?>
+                                </span>
+                            </td>
+                            <td class="p-4 text-right">
+                                <a href="<?php echo url('admin/cursos/editar/' . $curso['id']); ?>" class="text-blue-400 hover:text-blue-300 mr-3" title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="?delete_id=<?php echo $curso['id']; ?>" onclick="return confirm('¿Estás seguro de eliminar este curso?')" class="text-red-400 hover:text-red-300" title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
         </div>
     </div>
 
