@@ -38,8 +38,10 @@ if ($isLoggedIn) {
 
 // Determinar URL del botón principal
 $firstLessonUrl = '#';
+$courseSlug = !empty($curso['slug']) ? $curso['slug'] : $curso['id'];
+
 if (!empty($contenido) && !empty($contenido[0]['clases'])) {
-    $firstLessonUrl = url("curso/{$curso['slug']}/{$contenido[0]['slug']}/{$contenido[0]['clases'][0]['slug']}");
+    $firstLessonUrl = url("curso/{$courseSlug}/{$contenido[0]['slug']}/{$contenido[0]['clases'][0]['slug']}");
 }
 
 $ctaLink = $hasActiveSubscription ? $firstLessonUrl : url('suscripciones');
@@ -47,7 +49,10 @@ $ctaText = $hasActiveSubscription ? 'Empezar curso' : 'Suscribirse para acceder'
 
 // Parse JSON fields
 $stack = json_decode($curso['stack'] ?? '[]', true);
+if (!is_array($stack)) $stack = [];
+
 $learningGoals = json_decode($curso['lo_que_aprenderas'] ?? '[]', true);
+if (!is_array($learningGoals)) $learningGoals = [];
 
 ?>
 <!DOCTYPE html>
@@ -181,7 +186,7 @@ $learningGoals = json_decode($curso['lo_que_aprenderas'] ?? '[]', true);
                             <ul class="py-2">
                                 <?php foreach ($modulo['clases'] as $clase): 
                                     $claseUrl = $hasActiveSubscription 
-                                        ? url("curso/{$curso['slug']}/{$modulo['slug']}/{$clase['slug']}")
+                                        ? url("curso/{$courseSlug}/{$modulo['slug']}/{$clase['slug']}")
                                         : url('suscripciones');
                                 ?>
                                 <li>

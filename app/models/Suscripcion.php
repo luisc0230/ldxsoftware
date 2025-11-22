@@ -24,6 +24,10 @@ class Suscripcion {
             INSERT INTO suscripciones (usuario_id, plan_id, tipo_pago, precio_pagado, estado, fecha_creacion)
             VALUES (?, ?, ?, ?, 'pendiente', NOW())
         ");
+        if (!$stmt) {
+            error_log("Error prepare crear suscripcion: " . $this->db->error);
+            return false;
+        }
         $stmt->bind_param("iisd", $usuarioId, $planId, $tipoPago, $precio);
         
         if ($stmt->execute()) {
@@ -41,6 +45,8 @@ class Suscripcion {
      */
     public function activar($suscripcionId) {
         $stmt = $this->db->prepare("SELECT tipo_pago FROM suscripciones WHERE id = ?");
+        if (!$stmt) return false;
+        
         $stmt->bind_param("i", $suscripcionId);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -60,6 +66,9 @@ class Suscripcion {
                 fecha_actualizacion = NOW()
             WHERE id = ?
         ");
+        
+        if (!$updateStmt) return false;
+        
         $updateStmt->bind_param("i", $suscripcionId);
         
         if ($updateStmt->execute()) {
@@ -82,6 +91,9 @@ class Suscripcion {
             WHERE s.usuario_id = ? AND s.estado = 'activa'
             AND (s.fecha_fin IS NULL OR s.fecha_fin > NOW())
         ");
+        
+        if (!$stmt) return [];
+        
         $stmt->bind_param("i", $usuarioId);
         $stmt->execute();
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -98,6 +110,9 @@ class Suscripcion {
             WHERE s.usuario_id = ?
             ORDER BY s.fecha_creacion DESC
         ");
+        
+        if (!$stmt) return [];
+        
         $stmt->bind_param("i", $usuarioId);
         $stmt->execute();
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -113,6 +128,9 @@ class Suscripcion {
                 fecha_actualizacion = NOW()
             WHERE id = ?
         ");
+        
+        if (!$stmt) return false;
+
         $stmt->bind_param("i", $suscripcionId);
         
         if ($stmt->execute()) {
