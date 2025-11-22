@@ -7,20 +7,26 @@ ini_set('display_errors', 1);
 require_once __DIR__ . '/../../app/models/Database.php';
 
 try {
-    $db = Database::getInstance()->getConnection();
+    $db = Database::getInstance()->getConnection(); // Esto devuelve mysqli
     
-    // Verificar si existen las nuevas columnas usando fetch
+    // Verificar si existen las nuevas columnas usando MySQLi
     $checkColumns = $db->query("SHOW COLUMNS FROM planes LIKE 'precio_trimestral'");
-    $hasNewColumns = ($checkColumns && $checkColumns->fetch()) ? true : false;
+    $hasNewColumns = ($checkColumns && $checkColumns->num_rows > 0) ? true : false;
     
     if ($hasNewColumns) {
         // Solo mostrar los planes nuevos de la academia (IDs 4-7)
-        $stmt = $db->query("SELECT * FROM planes WHERE estado = 'activo' AND id >= 4 ORDER BY orden ASC");
+        $result = $db->query("SELECT * FROM planes WHERE estado = 'activo' AND id >= 4 ORDER BY orden ASC");
     } else {
-        $stmt = $db->query("SELECT * FROM planes WHERE estado = 'activo' ORDER BY id ASC");
+        $result = $db->query("SELECT * FROM planes WHERE estado = 'activo' ORDER BY id ASC");
     }
     
-    $planes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Convertir resultado MySQLi a array
+    $planes = [];
+    if ($result) {
+        while ($row = $result->fetch_assoc()) {
+            $planes[] = $row;
+        }
+    }
     
     // Debug: Verificar cuántos planes se obtuvieron
     error_log("Planes obtenidos: " . count($planes));
