@@ -42,7 +42,7 @@ $orderData = [
         'email' => $user['email'],
         'phone_number' => '999999999' // Culqi requiere teléfono, usamos dummy si no tenemos
     ],
-    // 'expiration_date' => time() + (24 * 60 * 60) // Comentado para evitar problemas de zona horaria
+    'expiration_date' => time() + (24 * 60 * 60) // Expira en 24 horas (Timestamp UNIX futuro)
 ];
 
 // Llamada a la API de Culqi
