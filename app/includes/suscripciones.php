@@ -9,9 +9,9 @@ require_once __DIR__ . '/../../app/models/Database.php';
 try {
     $db = Database::getInstance()->getConnection();
     
-    // Verificar si existen las nuevas columnas
+    // Verificar si existen las nuevas columnas usando fetch
     $checkColumns = $db->query("SHOW COLUMNS FROM planes LIKE 'precio_trimestral'");
-    $hasNewColumns = $checkColumns->rowCount() > 0;
+    $hasNewColumns = ($checkColumns && $checkColumns->fetch()) ? true : false;
     
     if ($hasNewColumns) {
         // Solo mostrar los planes nuevos de la academia (IDs 4-7)
