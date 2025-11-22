@@ -183,7 +183,48 @@ $user = AuthController::getCurrentUser();
         
         // Abrir Culqi Checkout
         document.getElementById('btnPagar').addEventListener('click', function() {
-            Culqi.open();
+            const btn = document.getElementById('btnPagar');
+            const originalText = btn.innerHTML;
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Creando Orden...';
+
+            // 1. Crear Orden en el Backend
+            fetch('<?php echo BASE_URL; ?>api/crear-orden.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // 2. Configurar Culqi con la orden real
+                    Culqi.settings({
+                        title: 'LDX Software',
+                        currency: 'PEN',
+                        amount: parseInt(precio) * 100,
+                        order: data.order_id // ID de orden real generado por Culqi
+                    });
+                    
+                    // 3. Abrir Checkout
+                    Culqi.open();
+                    
+                    // Restaurar botón
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                } else {
+                    alert('Error al iniciar pago: ' + (data.error || 'Error desconocido'));
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error de conexión al crear la orden.');
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            });
         });
         
         // Función que se ejecuta cuando Culqi retorna el token
