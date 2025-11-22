@@ -164,10 +164,10 @@ $user = AuthController::getCurrentUser();
         const paymentMethods = {
             tarjeta: true,
             yape: true,
-            billetera: true,
-            bancaMovil: true,
-            agente: true,
-            cuotealo: true
+            billetera: false,
+            bancaMovil: false,
+            agente: false,
+            cuotealo: false
         };
 
         Culqi.options({
