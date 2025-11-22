@@ -127,9 +127,9 @@ try {
                                 </span>
                             </td>
                             <td class="p-4 text-right">
-                                <button class="text-blue-400 hover:text-blue-300 mr-3" title="Editar">
+                                <a href="<?php echo url('admin/cursos/editar/' . $curso['id']); ?>" class="text-blue-400 hover:text-blue-300 mr-3" title="Editar">
                                     <i class="fas fa-edit"></i>
-                                </button>
+                                </a>
                                 <a href="?delete_id=<?php echo $curso['id']; ?>" onclick="return confirm('¿Estás seguro de eliminar este curso?')" class="text-red-400 hover:text-red-300" title="Eliminar">
                                     <i class="fas fa-trash"></i>
                                 </a>

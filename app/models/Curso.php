@@ -41,10 +41,12 @@ class Curso {
         // Si no encuentra y es numérico, intentar buscar por ID
         if (is_numeric($slug)) {
             $stmt = $this->db->prepare("SELECT * FROM cursos WHERE id = ?");
-            $stmt->bind_param("i", $slug);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            return $result->fetch_assoc();
+            if ($stmt) {
+                $stmt->bind_param("i", $slug);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                return $result->fetch_assoc();
+            }
         }
 
         return null;
@@ -53,6 +55,8 @@ class Curso {
     public function getContenidoCurso($cursoId) {
         // Obtener módulos
         $stmt = $this->db->prepare("SELECT * FROM modulos WHERE curso_id = ? ORDER BY orden ASC");
+        if (!$stmt) return [];
+        
         $stmt->bind_param("i", $cursoId);
         $stmt->execute();
         $modulos = $stmt->get_result()->fetch_all(MYSQLI_ASSOC);
@@ -62,9 +66,13 @@ class Curso {
             $modulo['slug'] = $this->slugify($modulo['titulo']); // Generar slug al vuelo
             
             $stmtClases = $this->db->prepare("SELECT * FROM clases WHERE modulo_id = ? ORDER BY orden ASC");
-            $stmtClases->bind_param("i", $modulo['id']);
-            $stmtClases->execute();
-            $clases = $stmtClases->get_result()->fetch_all(MYSQLI_ASSOC);
+            if ($stmtClases) {
+                $stmtClases->bind_param("i", $modulo['id']);
+                $stmtClases->execute();
+                $clases = $stmtClases->get_result()->fetch_all(MYSQLI_ASSOC);
+            } else {
+                $clases = [];
+            }
             
             // Añadir slug a cada clase
             foreach ($clases as &$clase) {

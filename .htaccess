@@ -5,6 +5,7 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
 # Rutas para Cursos
+RewriteRule ^admin/cursos/editar/([0-9]+)$ admin/editar_curso.php?id=$1 [L,QSA]
 RewriteRule ^curso/([^/]+)/([^/]+)/([^/]+)/?$ clase.php?course_slug=$1&module_slug=$2&lesson_slug=$3 [L,QSA]
 RewriteRule ^curso/([^/]+)/?$ curso.php?slug=$1 [L,QSA]
 
