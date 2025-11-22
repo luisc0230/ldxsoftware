@@ -103,12 +103,17 @@ $user = AuthController::getCurrentUser();
                     </div>
                 </div>
             <?php else: ?>
-                <!-- Login Button -->
+                <!-- Login Button - Desktop -->
                 <button onclick="openLoginModal()" class="hidden md:flex items-center gap-2 px-4 py-2 bg-white text-black hover:bg-gray-200 rounded-2xl transition-all font-semibold">
                     <div class="w-5 h-5 flex items-center justify-center">
                         <i class="fas fa-user" aria-hidden="true"></i>
                     </div>
                     <span>Iniciar sesión</span>
+                </button>
+                
+                <!-- Login Button - Mobile -->
+                <button onclick="openLoginModal()" class="flex md:hidden items-center justify-center w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 transition-all border border-white/20" title="Iniciar sesión" aria-label="Iniciar sesión">
+                    <i class="fas fa-user text-white" aria-hidden="true"></i>
                 </button>
             <?php endif; ?>
             
