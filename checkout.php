@@ -173,7 +173,7 @@ $user = AuthController::getCurrentUser();
             installments: false,
             paymentMethods: {
                 tarjeta: true,
-                yape: false,
+                yape: true,
                 billetera: false,
                 bancaMovil: false,
                 agente: false,
