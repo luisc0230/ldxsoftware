@@ -161,26 +161,22 @@ $user = AuthController::getCurrentUser();
         // Configurar Culqi
         Culqi.publicKey = '<?php echo CULQI_PUBLIC_KEY; ?>';
         
-        Culqi.settings({
-            title: 'LDX Software',
-            currency: 'PEN',
-            amount: parseInt(precio) * 100, // Convertir a centavos
-            order: 'ord_live_' + Date.now()
-        });
-        
+        const paymentMethods = {
+            tarjeta: true,
+            yape: true,
+            billetera: true,
+            bancaMovil: true,
+            agente: true,
+            cuotealo: true
+        };
+
         Culqi.options({
-            lang: 'es',
+            lang: 'auto',
             installments: false,
-            paymentMethods: {
-                tarjeta: true,
-                yape: true,
-                billetera: true,
-                bancaMovil: true,
-                agente: true,
-                cuotealo: true
-            }
+            paymentMethods: paymentMethods,
+            paymentMethodsSort: Object.keys(paymentMethods)
         });
-        
+
         // Abrir Culqi Checkout
         document.getElementById('btnPagar').addEventListener('click', function() {
             const btn = document.getElementById('btnPagar');
@@ -227,10 +223,11 @@ $user = AuthController::getCurrentUser();
             });
         });
         
-        // Función que se ejecuta cuando Culqi retorna el token
+        // Función que se ejecuta cuando Culqi retorna el token u orden
         function culqi() {
             if (Culqi.token) {
                 const token = Culqi.token.id;
+                console.log('Se ha creado un Token: ', token);
                 
                 // Mostrar loading
                 document.getElementById('btnPagar').innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Procesando...';
@@ -264,6 +261,12 @@ $user = AuthController::getCurrentUser();
                     document.getElementById('btnPagar').disabled = false;
                 });
                 
+            } else if (Culqi.order) { 
+                const order = Culqi.order;
+                console.log('Se ha creado el objeto Order: ', order);
+                // Aquí podrías redirigir a una página de "pago pendiente" si es pago efectivo/cip
+                // Por ahora cerramos
+                Culqi.close();
             } else if (Culqi.error) {
                 console.error('Error de Culqi:', Culqi.error);
                 alert('Error: ' + Culqi.error.user_message);
