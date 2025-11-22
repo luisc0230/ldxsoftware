@@ -37,7 +37,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $descripcion = $_POST['descripcion'];
         $precio = $_POST['precio'];
         $estado = $_POST['estado'];
-        $imagen_url = $_POST['imagen_url'];
+        
+        // Manejo de imagen
+        $imagen_url = $_POST['imagen_url_actual']; // Default to existing
+        
+        if (isset($_FILES['imagen_nueva']) && $_FILES['imagen_nueva']['error'] === UPLOAD_ERR_OK) {
+            $uploadDir = __DIR__ . '/../../assets/images/cursos/';
+            if (!file_exists($uploadDir)) {
+                mkdir($uploadDir, 0755, true);
+            }
+            
+            $fileExtension = pathinfo($_FILES['imagen_nueva']['name'], PATHINFO_EXTENSION);
+            $fileName = 'curso_' . $id . '_' . time() . '.' . $fileExtension;
+            $targetPath = $uploadDir . $fileName;
+            
+            if (move_uploaded_file($_FILES['imagen_nueva']['tmp_name'], $targetPath)) {
+                // Delete old image if it exists and is local
+                if (!empty($imagen_url) && strpos($imagen_url, 'assets/images/cursos/') !== false) {
+                    $oldPath = __DIR__ . '/../../' . $imagen_url;
+                    if (file_exists($oldPath)) {
+                        unlink($oldPath);
+                    }
+                }
+                $imagen_url = 'assets/images/cursos/' . $fileName;
+            }
+        } else if (!empty($_POST['imagen_url_manual'])) {
+             // Allow manual URL override if provided
+             $imagen_url = $_POST['imagen_url_manual'];
+        }
+
         $slug = $_POST['slug'] ?: null;
         $instructor_nombre = $_POST['instructor_nombre'];
         $instructor_bio = $_POST['instructor_bio'];
@@ -141,7 +169,7 @@ if (!$curso) {
                 </div>
             <?php endif; ?>
 
-            <form method="POST" class="space-y-6">
+            <form method="POST" class="space-y-6" enctype="multipart/form-data">
                 <div class="bg-gray-800 rounded-xl p-6 border border-gray-700">
                     <h2 class="text-xl font-bold text-white mb-4">Información Básica</h2>
                     
@@ -182,23 +210,48 @@ if (!$curso) {
                     <h2 class="text-xl font-bold text-white mb-4">Media & Detalles</h2>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label class="block text-sm font-medium mb-2">URL Imagen</label>
-                            <input type="text" name="imagen_url" value="<?php echo htmlspecialchars($curso['imagen_url']); ?>"
-                                class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white focus:border-blue-500 focus:outline-none">
+                        <div class="col-span-full md:col-span-1">
+                            <label class="block text-sm font-medium mb-2">Imagen del Curso</label>
+                            
+                            <!-- Imagen Actual Preview -->
+                            <div class="mb-4 relative group w-full aspect-video bg-gray-900 rounded-lg overflow-hidden border border-gray-700">
+                                <img src="<?php echo htmlspecialchars(BASE_URL . $curso['imagen_url']); ?>" alt="Portada actual" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <span class="text-white text-sm font-medium">Imagen Actual</span>
+                                </div>
+                            </div>
+
+                            <input type="hidden" name="imagen_url_actual" value="<?php echo htmlspecialchars($curso['imagen_url']); ?>">
+                            
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-1">Subir Nueva Imagen (Reemplaza la anterior)</label>
+                                    <input type="file" name="imagen_nueva" accept="image/*"
+                                        class="w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-700">
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-xs text-gray-400 mb-1">O usar URL externa (Opcional)</label>
+                                    <input type="text" name="imagen_url_manual" placeholder="https://..."
+                                        class="w-full bg-gray-700 border border-gray-600 rounded-lg p-2 text-sm text-white focus:border-blue-500 focus:outline-none">
+                                </div>
+                            </div>
                         </div>
-                        <div>
-                            <label class="block text-sm font-medium mb-2">Nivel</label>
-                            <select name="nivel" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white focus:border-blue-500 focus:outline-none">
-                                <option value="Principiante" <?php echo $curso['nivel'] === 'Principiante' ? 'selected' : ''; ?>>Principiante</option>
-                                <option value="Intermedio" <?php echo $curso['nivel'] === 'Intermedio' ? 'selected' : ''; ?>>Intermedio</option>
-                                <option value="Avanzado" <?php echo $curso['nivel'] === 'Avanzado' ? 'selected' : ''; ?>>Avanzado</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium mb-2">Duración Total</label>
-                            <input type="text" name="duracion_total" value="<?php echo htmlspecialchars($curso['duracion_total']); ?>" placeholder="Ej: 2h 30m"
-                                class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white focus:border-blue-500 focus:outline-none">
+
+                        <div class="flex flex-col gap-6">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Nivel</label>
+                                <select name="nivel" class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white focus:border-blue-500 focus:outline-none">
+                                    <option value="Principiante" <?php echo $curso['nivel'] === 'Principiante' ? 'selected' : ''; ?>>Principiante</option>
+                                    <option value="Intermedio" <?php echo $curso['nivel'] === 'Intermedio' ? 'selected' : ''; ?>>Intermedio</option>
+                                    <option value="Avanzado" <?php echo $curso['nivel'] === 'Avanzado' ? 'selected' : ''; ?>>Avanzado</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Duración Total</label>
+                                <input type="text" name="duracion_total" value="<?php echo htmlspecialchars($curso['duracion_total']); ?>" placeholder="Ej: 2h 30m"
+                                    class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white focus:border-blue-500 focus:outline-none">
+                            </div>
                         </div>
                     </div>
                 </div>

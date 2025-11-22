@@ -89,6 +89,23 @@ if (!$clase) {
     <title>Editar Clase - Admin</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <script src="https://kit.fontawesome.com/6d85ddc2e8.js" crossorigin="anonymous"></script>
+    <!-- TinyMCE -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tinymce/6.8.2/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        tinymce.init({
+            selector: '#editor',
+            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+            skin: 'oxide-dark',
+            content_css: 'dark',
+            height: 500,
+            setup: function (editor) {
+                editor.on('change', function () {
+                    editor.save();
+                });
+            }
+        });
+    </script>
 </head>
 <body class="bg-gray-900 min-h-screen flex flex-col text-gray-300">
     
@@ -135,9 +152,8 @@ if (!$clase) {
                         </div>
                         
                         <div class="col-span-full">
-                            <label class="block text-sm font-medium mb-2">Contenido (Descripción HTML)</label>
-                            <p class="text-xs text-gray-500 mb-2">Puedes pegar aquí el HTML del contenido de la clase.</p>
-                            <textarea name="descripcion" rows="15" 
+                            <label class="block text-sm font-medium mb-2">Contenido del Tema</label>
+                            <textarea id="editor" name="descripcion" 
                                 class="w-full bg-gray-700 border border-gray-600 rounded-lg p-3 text-white font-mono text-sm focus:border-blue-500 focus:outline-none"><?php echo htmlspecialchars($clase['descripcion']); ?></textarea>
                         </div>
 
