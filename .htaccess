@@ -4,6 +4,11 @@ RewriteEngine On
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
-# Si existe el archivo con extensión .php, reescribe la URL
+# Rutas para Cursos
+RewriteRule ^curso/([^/]+)/([^/]+)/([^/]+)/?$ clase.php?course_slug=$1&module_slug=$2&lesson_slug=$3 [L,QSA]
+RewriteRule ^curso/([^/]+)/?$ curso.php?slug=$1 [L,QSA]
+
+# Reescribir URLs para eliminar la extensión .php (para otros archivos)
+RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php -f
-RewriteRule ^(.*)$ $1.php [L]
+RewriteRule ^([^\.]+)$ $1.php [NC,L]
