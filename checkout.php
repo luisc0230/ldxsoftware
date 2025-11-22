@@ -174,10 +174,10 @@ $user = AuthController::getCurrentUser();
             paymentMethods: {
                 tarjeta: true,
                 yape: true,
-                billetera: false,
-                bancaMovil: false,
-                agente: false,
-                cuotealo: false
+                billetera: true,
+                bancaMovil: true,
+                agente: true,
+                cuotealo: true
             }
         });
         
