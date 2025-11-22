@@ -199,9 +199,11 @@ $user = AuthController::getCurrentUser();
                     console.log("Public Key usada:", Culqi.publicKey);
 
                     // 2. Re-inicializar configuración de Culqi con la NUEVA orden
-                    // NOTA: Cuando se usa 'order', NO se debe enviar amount/currency nuevamente
+                    // NOTA: Es importante volver a pasar amount y currency para asegurar consistencia
                     Culqi.settings({
                         title: 'LDX Software',
+                        currency: 'PEN',
+                        amount: parseInt(precio) * 100,
                         order: data.order_id // ID fresco del backend
                     });
                     Culqi.options({
