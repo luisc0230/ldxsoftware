@@ -103,11 +103,13 @@ $user = AuthController::getCurrentUser();
                     </div>
                 </div>
             <?php else: ?>
-                <!-- CTA Button -->
-                <a href="<?php echo BASE_URL; ?>#contacto" class="hidden md:flex items-center gap-2 px-4 py-2 bg-white text-black hover:bg-gray-200 rounded-2xl transition-all font-semibold">
-                    <i class="fas fa-rocket" aria-hidden="true"></i>
-                    Cotizar Proyecto
-                </a>
+                <!-- Login Button -->
+                <button onclick="openLoginModal()" class="hidden md:flex items-center gap-2 px-4 py-2 bg-white text-black hover:bg-gray-200 rounded-2xl transition-all font-semibold">
+                    <div class="w-5 h-5 flex items-center justify-center">
+                        <i class="fas fa-user" aria-hidden="true"></i>
+                    </div>
+                    <span>Iniciar sesión</span>
+                </button>
             <?php endif; ?>
             
             <!-- Mobile Menu Toggle -->
@@ -123,7 +125,80 @@ $user = AuthController::getCurrentUser();
     </div>
 </header>
 
+<!-- Login Modal -->
+<dialog id="loginModal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[99999999] text-white p-8 pt-20 w-full max-w-sm bg-gray-900 border border-gray-700 rounded-xl shadow-xl backdrop:bg-black/50 backdrop:backdrop-blur-sm">
+    <form method="dialog">
+        <button type="button" onclick="closeLoginModal()" title="Cerrar modal" aria-label="Cerrar modal" class="absolute p-3 rounded-xl bg-black/20 border border-gray-700 top-5 right-5 hover:bg-gray-800 transition-colors text-white">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+            </svg>
+        </button>
+    </form>
+    
+    <div class="px-3 pb-6 w-full">
+        <div class="text-center mb-6">
+            <div class="size-12 mx-auto mb-3 bg-gradient-to-br from-white to-neutral-200 rounded-lg flex items-center justify-center">
+                <img alt="LDX Software logo" class="size-8" src="<?php echo asset('images/logo.png'); ?>">
+            </div>
+            <h2 class="text-xl font-semibold text-white mb-1">Iniciar sesión</h2>
+            <p class="text-sm text-gray-400">Accede a la academia de LDX Software</p>
+        </div>
+        
+        <div class="flex flex-col gap-3">
+            <a href="<?php echo url('auth/google'); ?>" class="w-full px-4 py-3 bg-white hover:bg-gray-100 text-gray-900 font-semibold rounded-lg transition-all flex items-center justify-center gap-3 shadow-lg hover:shadow-xl">
+                <svg viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                </svg>
+                Continuar con Google
+            </a>
+            
+            <div class="text-center pt-2">
+                <p class="text-xs text-gray-500">
+                    Al continuar, aceptas nuestros 
+                    <a href="<?php echo url('terminos'); ?>" class="text-blue-400 hover:text-blue-300 hover:underline">términos</a> y 
+                    <a href="<?php echo url('privacidad'); ?>" class="text-blue-400 hover:text-blue-300 hover:underline">política de privacidad</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</dialog>
+
 <script>
+    // Login Modal Functions
+    function openLoginModal() {
+        const modal = document.getElementById('loginModal');
+        if (modal) {
+            modal.showModal();
+            document.body.style.overflow = 'hidden';
+        }
+    }
+    
+    function closeLoginModal() {
+        const modal = document.getElementById('loginModal');
+        if (modal) {
+            modal.close();
+            document.body.style.overflow = '';
+        }
+    }
+    
+    // Close modal on backdrop click
+    document.getElementById('loginModal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeLoginModal();
+        }
+    });
+    
+    // Close modal on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeLoginModal();
+        }
+    });
+
     // User menu dropdown toggle
     function toggleUserMenu() {
         const userMenu = document.getElementById('userMenu');
@@ -186,6 +261,31 @@ $user = AuthController::getCurrentUser();
 
 <style>
     html { scroll-behavior: smooth; }
+    
+    /* Modal animations */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translate(-50%, -48%);
+        }
+        to {
+            opacity: 1;
+            transform: translate(-50%, -50%);
+        }
+    }
+    
+    dialog[open] {
+        animation: fadeInUp 0.3s ease-out;
+    }
+    
+    dialog::backdrop {
+        animation: fadeIn 0.3s ease-out;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
     
     /* Hamburger Animation */
     .hamburger-line {
