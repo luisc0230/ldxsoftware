@@ -196,16 +196,14 @@ $user = AuthController::getCurrentUser();
             .then(data => {
                 if (data.success) {
                     console.log("Nueva orden creada:", data.order_id); // Debug
-                    
+                    console.log("Public Key usada:", Culqi.publicKey);
+
                     // 2. Re-inicializar configuración de Culqi con la NUEVA orden
+                    // NOTA: Cuando se usa 'order', NO se debe enviar amount/currency nuevamente
                     Culqi.settings({
                         title: 'LDX Software',
-                        currency: 'PEN',
-                        amount: parseInt(precio) * 100,
                         order: data.order_id // ID fresco del backend
                     });
-                    
-                    // Opciones también se pueden re-setear por seguridad
                     Culqi.options({
                         lang: 'auto',
                         installments: false,
