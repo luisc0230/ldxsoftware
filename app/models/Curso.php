@@ -5,7 +5,7 @@ class Curso {
     private $db;
 
     public function __construct() {
-        $this->db = (new Database())->getConnection();
+        $this->db = Database::getInstance()->getConnection();
     }
 
     // Helper para slugificar texto (simple)
