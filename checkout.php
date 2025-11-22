@@ -202,9 +202,7 @@ $user = AuthController::getCurrentUser();
                         title: 'LDX Software',
                         currency: 'PEN',
                         amount: parseInt(precio) * 100,
-                        order: data.order_id, // ID fresco del backend
-                        xculqirsaid: '', // Si usas cifrado, va aquí
-                        rsapublickey: '' // Si usas cifrado, va aquí
+                        order: data.order_id // ID fresco del backend
                     });
                     
                     // Opciones también se pueden re-setear por seguridad
