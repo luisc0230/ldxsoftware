@@ -113,10 +113,20 @@ try {
                             <td class="p-4 font-semibold text-white">
                                 <div class="flex items-center gap-3">
                                     <?php if ($curso['imagen_url']): ?>
-                                        <img src="<?php echo str_starts_with($curso['imagen_url'], 'http') ? $curso['imagen_url'] : asset($curso['imagen_url']); ?>" 
+                                        <?php 
+                                        // Si ya empieza con http, usar directamente. Si empieza con assets/, concatenar con BASE_URL. Si no, usar asset()
+                                        if (str_starts_with($curso['imagen_url'], 'http')) {
+                                            $imageSrc = $curso['imagen_url'];
+                                        } elseif (str_starts_with($curso['imagen_url'], 'assets/')) {
+                                            $imageSrc = BASE_URL . $curso['imagen_url'];
+                                        } else {
+                                            $imageSrc = asset($curso['imagen_url']);
+                                        }
+                                        ?>
+                                        <img src="<?php echo htmlspecialchars($imageSrc); ?>" 
                                              class="w-10 h-10 rounded object-cover bg-gray-700" 
                                              alt=""
-                                             onerror="this.src='<?php echo asset('images/logo.png'); ?>'">
+                                             onerror="this.src='<?php echo BASE_URL; ?>assets/images/logo.png'">
                                     <?php endif; ?>
                                     <?php echo htmlspecialchars($curso['titulo']); ?>
                                 </div>
