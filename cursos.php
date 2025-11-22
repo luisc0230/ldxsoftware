@@ -97,133 +97,91 @@ if (empty($cursos)) {
             </div>
 
             <!-- Grid de Cursos -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <?php 
-                // Verificar suscripción activa
-                require_once __DIR__ . '/app/models/Suscripcion.php';
-                $hasActiveSubscription = false;
-                if ($isLoggedIn && $user) {
-                    $suscripcionModel = new Suscripcion();
-                    $suscripciones = $suscripcionModel->getSuscripcionesActivas($user['id']);
-                    if (!empty($suscripciones)) {
-                        $hasActiveSubscription = true;
-                    }
-                }
-
-                foreach ($cursos as $curso): 
-                    // Determinar URL del curso (usar slug si existe, sino ID)
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <?php foreach ($cursos as $curso): 
+                    // Determinar URL del curso
                     $cursoSlug = !empty($curso['slug']) ? $curso['slug'] : $curso['id'];
                     $cursoUrl = url('curso/' . $cursoSlug);
+                    $isNew = false; // Logic for 'New' badge could be added here based on created_at
                 ?>
-                    <?php if ($hasActiveSubscription): ?>
-                        <!-- Diseño Premium (Estilo Streaming) -->
-                        <div class="relative group rounded-xl overflow-hidden aspect-video border border-gray-800 hover:border-blue-500/50 transition-all duration-300 shadow-lg hover:shadow-blue-500/20">
-                            <!-- Imagen de fondo -->
-                            <img src="<?php echo htmlspecialchars($curso['imagen_url']); ?>" 
-                                 alt="<?php echo htmlspecialchars($curso['titulo']); ?>"
-                                 class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
-                                 onerror="this.src='<?php echo asset('images/logo.png'); ?>'">
-                            
-                            <!-- Overlay Gradiente -->
-                            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-90 group-hover:opacity-80 transition-opacity"></div>
-                            
-                            <!-- Contenido Superpuesto -->
-                            <div class="absolute inset-0 p-6 flex flex-col justify-end">
-                                <!-- Badges -->
-                                <div class="absolute top-4 right-4 flex gap-2">
-                                    <?php if (!empty($curso['nivel'])): ?>
-                                    <span class="bg-black/60 backdrop-blur-md border border-white/10 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">
-                                        <?php echo htmlspecialchars($curso['nivel']); ?>
-                                    </span>
-                                    <?php endif; ?>
-                                </div>
-
-                                <!-- Título -->
-                                <h3 class="text-2xl font-bold text-white mb-2 leading-tight group-hover:text-blue-400 transition-colors">
-                                    <?php echo htmlspecialchars($curso['titulo']); ?>
-                                </h3>
-                                
-                                <!-- Info Meta -->
-                                <div class="flex items-center gap-4 text-gray-300 text-sm mb-4">
-                                    <?php if (!empty($curso['duracion_total'])): ?>
-                                    <span class="flex items-center gap-1.5">
-                                        <i class="far fa-clock text-blue-400"></i> <?php echo htmlspecialchars($curso['duracion_total']); ?>
-                                    </span>
-                                    <?php endif; ?>
-                                    <?php if (!empty($curso['total_clases'])): ?>
-                                    <span class="flex items-center gap-1.5">
-                                        <i class="fas fa-play-circle text-blue-400"></i> <?php echo $curso['total_clases']; ?> clases
-                                    </span>
-                                    <?php endif; ?>
-                                </div>
-
-                                <!-- Botón de Acción -->
-                                <a href="<?php echo $cursoUrl; ?>" class="w-full bg-white text-black hover:bg-blue-500 hover:text-white font-bold py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm">
-                                    <i class="fas fa-play"></i> Ir al curso
-                                </a>
-                            </div>
+                    <article class="group relative overflow-hidden rounded-xl border border-white/10 bg-[#0D1828] transition hover:contrast-110 before:left-1/2 before:bottom-0 before:-translate-x-1/2 before:w-full before:h-full before:bg-black before:absolute before:translate-y-full hover:before:translate-y-1/2 before:-z-10 before:transition before:duration-200 before:mask-t-from-70% h-full shadow-lg">
+                        
+                        <!-- Admin Controls -->
+                        <?php if ($isAdmin): ?>
+                        <div class="absolute top-2 left-2 z-30 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <a href="<?php echo url('admin/cursos/editar/' . $curso['id']); ?>" class="bg-black/70 hover:bg-blue-600 text-white p-1.5 rounded-lg backdrop-blur-sm transition-colors text-xs" title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="<?php echo url('admin/cursos/eliminar'); ?>" method="POST" onsubmit="return confirm('¿Estás seguro?');" class="inline">
+                                <input type="hidden" name="id" value="<?php echo $curso['id']; ?>">
+                                <button type="submit" class="bg-black/70 hover:bg-red-600 text-white p-1.5 rounded-lg backdrop-blur-sm transition-colors text-xs" title="Eliminar">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
                         </div>
+                        <?php endif; ?>
 
-                    <?php else: ?>
-                        <!-- Diseño Estándar (Venta) -->
-                        <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden border border-gray-700 hover:border-blue-500/50 transition-all duration-300 group flex flex-col h-full">
-                            <!-- Imagen -->
-                            <div class="relative h-48 overflow-hidden">
-                                <div class="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent z-10"></div>
-                                <img src="<?php echo htmlspecialchars($curso['imagen_url']); ?>" 
-                                     alt="<?php echo htmlspecialchars($curso['titulo']); ?>"
-                                     class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-                                     onerror="this.src='<?php echo asset('images/logo.png'); ?>'">
-                                
+                        <a href="<?php echo $cursoUrl; ?>" class="flex aspect-video flex-col h-full p-2 relative z-10">
+                            
+                            <!-- Badges (Top Right) -->
+                            <div class="absolute top-2 right-2 opacity-100 transition inline-flex items-center gap-2 flex-wrap group-hover:opacity-0 group-hover:-translate-y-1">
                                 <?php if ($curso['es_gratuito']): ?>
-                                    <span class="absolute top-4 right-4 z-20 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                                        GRATIS
-                                    </span>
+                                <span class="relative isolate inline-flex items-center gap-1 overflow-hidden text-center font-medium whitespace-nowrap transition-all duration-300 rounded-lg shadow-[0_2px_8px_rgba(59,130,246,0.35),0_0_0_1px_theme(colors.white/10%)] bg-gradient-to-br from-blue-500 via-blue-400 to-blue-500 border border-blue-300/50 text-white backdrop-blur-sm px-2.5 py-1 text-xs">
+                                    <i class="fas fa-gift text-[10px]"></i> <span class="relative z-10 font-bold">Gratis</span>
+                                </span>
                                 <?php else: ?>
-                                    <span class="absolute top-4 right-4 z-20 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                                        PREMIUM
-                                    </span>
+                                <span class="relative isolate inline-flex items-center gap-1 overflow-hidden text-center font-medium whitespace-nowrap transition-all duration-300 rounded-lg shadow-[0_2px_8px_rgba(59,130,246,0.35),0_0_0_1px_theme(colors.white/10%)] bg-gradient-to-br from-purple-500 via-purple-400 to-purple-500 border border-purple-300/50 text-white backdrop-blur-sm px-2.5 py-1 text-xs">
+                                    <i class="fas fa-crown text-[10px]"></i> <span class="relative z-10 font-bold">Premium</span>
+                                </span>
+                                <?php endif; ?>
+
+                                <?php if ($isNew): ?>
+                                <span class="relative isolate inline-flex items-center gap-1 overflow-hidden text-center font-medium whitespace-nowrap transition-all duration-300 rounded-lg shadow-[0_2px_8px_rgba(255,215,0,0.35),0_0_0_1px_theme(colors.white/10%)] bg-gradient-to-br from-yellow-400 via-yellow-300 to-yellow-500 border border-yellow-300/50 text-black backdrop-blur-sm px-2.5 py-1 text-xs">
+                                    <i class="fas fa-star text-[10px] animate-pulse"></i> <span class="relative z-10 font-bold">Nuevo</span>
+                                </span>
                                 <?php endif; ?>
                             </div>
+
+                            <!-- Background Image -->
+                            <img src="<?php echo htmlspecialchars($curso['imagen_url']); ?>" 
+                                 class="absolute inset-0 -z-20 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
+                                 alt="<?php echo htmlspecialchars($curso['titulo']); ?>"
+                                 onerror="this.src='<?php echo asset('images/logo.png'); ?>'">
                             
-                            <!-- Contenido -->
-                            <div class="p-6 flex-grow flex flex-col">
-                                <h3 class="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">
+                            <!-- Gradient Overlay -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent -z-10"></div>
+
+                            <div class="opacity-100 flex transition flex-col gap-2 flex-1"></div>
+
+                            <!-- Bottom Content (Hover Reveal) -->
+                            <div class="flex flex-wrap items-end justify-between mt-8 transition translate-y-1 opacity-0 duration-300 group-hover:opacity-100 group-hover:translate-y-0">
+                                <h2 class="mt-auto text-shadow-lg text-white leading-snug font-medium text-balance max-w-[28ch] text-sm mb-2 ml-1">
                                     <?php echo htmlspecialchars($curso['titulo']); ?>
-                                </h3>
-                                <p class="text-gray-400 text-sm mb-4 flex-grow line-clamp-3">
-                                    <?php echo htmlspecialchars($curso['descripcion']); ?>
-                                </p>
+                                </h2>
                                 
-                                <div class="flex items-center justify-between mt-auto pt-4 border-t border-gray-700">
-                                    <?php if ($curso['es_gratuito']): ?>
-                                        <span class="text-green-400 font-bold text-lg">Gratis</span>
-                                    <?php else: ?>
-                                        <span class="text-white font-bold text-lg">S/ <?php echo number_format($curso['precio'], 2); ?></span>
-                                    <?php endif; ?>
+                                <div class="flex flex-wrap items-center justify-between w-full">
+                                    <div>
+                                        <div class="flex items-center gap-4 text-sm text-gray-300 flex-wrap">
+                                            <?php if (!empty($curso['duracion_total'])): ?>
+                                            <p class="flex items-center gap-1 text-xs">
+                                                <span class="p-1 aspect-square border border-white/10 bg-white/5 rounded-full flex items-center justify-center w-5 h-5">
+                                                    <i class="far fa-clock text-[10px]"></i>
+                                                </span>
+                                                <span><?php echo htmlspecialchars($curso['duracion_total']); ?></span>
+                                            </p>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
                                     
-                                    <a href="<?php echo $cursoUrl; ?>" class="text-blue-400 hover:text-white text-sm font-semibold transition-colors">
-                                        Ver Detalles <i class="fas fa-arrow-right ml-1"></i>
-                                    </a>
+                                    <div class="group/btn relative isolate inline-flex items-center justify-center overflow-hidden text-center font-semibold transition-all duration-300 rounded-lg border hover:bg-white/10 shadow-sm h-8 px-3 text-xs w-auto text-white border-white/30 group-hover:scale-105">
+                                        <span class="flex items-center gap-1.5">
+                                            <i class="fas fa-play text-[10px]"></i> Ir al curso
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                            
-                            <!-- Controles de Admin -->
-                            <?php if ($isAdmin): ?>
-                            <div class="bg-gray-900/90 p-3 flex justify-between items-center border-t border-gray-700">
-                                <span class="text-xs text-gray-500">ID: <?php echo $curso['id']; ?></span>
-                                <div class="flex gap-2">
-                                    <button class="text-blue-400 hover:text-blue-300 p-2" title="Editar">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                    <button class="text-red-400 hover:text-red-300 p-2" title="Eliminar">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            <?php endif; ?>
-                        </div>
-                    <?php endif; ?>
+                        </a>
+                    </article>
                 <?php endforeach; ?>
             </div>
             

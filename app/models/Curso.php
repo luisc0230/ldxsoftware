@@ -24,11 +24,30 @@ class Curso {
     }
 
     public function getCursoBySlug($slug) {
-        $stmt = $this->db->prepare("SELECT * FROM cursos WHERE slug = ?");
-        $stmt->bind_param("s", $slug);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->fetch_assoc();
+        // Intentar buscar por slug
+        try {
+            $stmt = $this->db->prepare("SELECT * FROM cursos WHERE slug = ?");
+            if ($stmt) {
+                $stmt->bind_param("s", $slug);
+                $stmt->execute();
+                $result = $stmt->get_result();
+                $curso = $result->fetch_assoc();
+                if ($curso) return $curso;
+            }
+        } catch (Exception $e) {
+            // Ignorar error si la columna slug no existe aún
+        }
+
+        // Si no encuentra y es numérico, intentar buscar por ID
+        if (is_numeric($slug)) {
+            $stmt = $this->db->prepare("SELECT * FROM cursos WHERE id = ?");
+            $stmt->bind_param("i", $slug);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            return $result->fetch_assoc();
+        }
+
+        return null;
     }
 
     public function getContenidoCurso($cursoId) {
