@@ -5,6 +5,10 @@ ini_set('display_errors', 1);
 
 // Obtener planes de la base de datos
 require_once __DIR__ . '/../../app/models/Database.php';
+require_once __DIR__ . '/../../app/models/Suscripcion.php';
+
+$suscripcionActiva = null;
+$planActivoId = 0;
 
 try {
     $db = Database::getInstance()->getConnection(); // Esto devuelve mysqli
@@ -25,6 +29,16 @@ try {
     if ($result) {
         while ($row = $result->fetch_assoc()) {
             $planes[] = $row;
+        }
+    }
+    
+    // Obtener suscripción activa si el usuario está logueado
+    if (isset($_SESSION['user'])) {
+        $suscripcionModel = new Suscripcion();
+        $activas = $suscripcionModel->getSuscripcionesActivas($_SESSION['user']['id']);
+        if (!empty($activas)) {
+            $suscripcionActiva = $activas[0]; // Tomamos la primera activa
+            $planActivoId = $suscripcionActiva['plan_id'];
         }
     }
     
@@ -114,6 +128,10 @@ try {
                     
                     // Obtener características
                     $caracteristicas = explode('|', $plan['caracteristicas'] ?? '');
+                    
+                    // Determinar estado del botón
+                    $esPlanActual = ($planActivoId == $plan['id']);
+                    $esMejora = ($planActivoId > 0 && $plan['id'] > $planActivoId); // Asumiendo que ID mayor es mejor plan
                     ?>
                     
                     <div class="relative <?php echo $plan['es_recomendado'] ? 'lg:-mt-4' : ''; ?>">
@@ -127,13 +145,21 @@ try {
                         <?php endif; ?>
                         
                         <!-- Card del Plan -->
-                        <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 border <?php echo $plan['es_recomendado'] ? 'border-blue-500 shadow-lg shadow-blue-500/20' : 'border-gray-700'; ?> h-full flex flex-col relative overflow-hidden">
+                        <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 border <?php echo $esPlanActual ? 'border-green-500 shadow-lg shadow-green-500/20' : ($plan['es_recomendado'] ? 'border-blue-500 shadow-lg shadow-blue-500/20' : 'border-gray-700'); ?> h-full flex flex-col relative overflow-hidden">
                             
                             <!-- Badge de Descuento -->
-                            <?php if ($plan['descuento_porcentaje'] > 0): ?>
+                            <?php if ($plan['descuento_porcentaje'] > 0 && !$esPlanActual): ?>
                                 <div class="absolute top-4 right-4">
                                     <span class="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full">
                                         -<?php echo $plan['descuento_porcentaje']; ?>% descuento
+                                    </span>
+                                </div>
+                            <?php endif; ?>
+                            
+                            <?php if ($esPlanActual): ?>
+                                <div class="absolute top-4 right-4">
+                                    <span class="bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full">
+                                        Plan Actual
                                     </span>
                                 </div>
                             <?php endif; ?>
@@ -145,7 +171,7 @@ try {
                             
                             <!-- Precio -->
                             <div class="mb-4">
-                                <?php if ($ahorro > 0): ?>
+                                <?php if ($ahorro > 0 && !$esPlanActual): ?>
                                     <p class="text-gray-400 text-sm line-through">
                                         Antes S/<?php echo number_format($precioOriginal, 2); ?>
                                     </p>
@@ -158,7 +184,7 @@ try {
                                         <?php echo $periodo; ?>
                                     </span>
                                 </div>
-                                <?php if ($ahorro > 0): ?>
+                                <?php if ($ahorro > 0 && !$esPlanActual): ?>
                                     <p class="text-green-400 text-sm font-semibold mt-1">
                                         ¡Ahorras S/<?php echo number_format($ahorro, 2); ?>!
                                     </p>
@@ -187,14 +213,27 @@ try {
                             </ul>
                             
                             <!-- Botón -->
-                            <button 
-                                onclick="iniciarSuscripcion(<?php echo $plan['id']; ?>, <?php echo $precioFinal; ?>, '<?php echo $tipoPlan; ?>')"
-                                class="w-full <?php echo $plan['es_recomendado'] ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'; ?> text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105">
-                                Comenzar ahora
-                            </button>
+                            <?php if ($esPlanActual): ?>
+                                <button disabled
+                                    class="w-full bg-green-600/20 text-green-400 border border-green-500/50 font-semibold py-3 px-6 rounded-lg cursor-default">
+                                    <i class="fas fa-check-circle mr-2"></i> Plan Activo
+                                </button>
+                            <?php elseif ($esMejora): ?>
+                                <button 
+                                    onclick="iniciarSuscripcion(<?php echo $plan['id']; ?>, <?php echo $precioFinal; ?>, '<?php echo $tipoPlan; ?>')"
+                                    class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105 shadow-lg shadow-purple-500/25">
+                                    <i class="fas fa-arrow-up mr-2"></i> Mejorar Plan
+                                </button>
+                            <?php else: ?>
+                                <button 
+                                    onclick="iniciarSuscripcion(<?php echo $plan['id']; ?>, <?php echo $precioFinal; ?>, '<?php echo $tipoPlan; ?>')"
+                                    class="w-full <?php echo $plan['es_recomendado'] ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'; ?> text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105">
+                                    Comenzar ahora
+                                </button>
+                            <?php endif; ?>
                             
                             <p class="text-xs text-gray-500 text-center mt-3">
-                                Puedes cancelar tu suscripción en cualquier momento
+                                <?php echo $esPlanActual ? 'Tu suscripción está activa' : 'Puedes cancelar en cualquier momento'; ?>
                             </p>
                         </div>
                     </div>
