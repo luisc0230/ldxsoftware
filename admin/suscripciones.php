@@ -70,8 +70,13 @@ try {
 
     <div class="container mx-auto px-4 py-8 flex-grow">
         <div class="flex justify-between items-center mb-8">
-            <h1 class="text-3xl font-bold text-white">Gestión de Suscripciones</h1>
-            <div class="text-gray-400 text-sm">Mostrando últimas 50</div>
+            <div>
+                <h1 class="text-3xl font-bold text-white">Gestión de Suscripciones</h1>
+                <div class="text-gray-400 text-sm">Historial de pagos y accesos</div>
+            </div>
+            <a href="<?php echo url('admin/planes'); ?>" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors shadow-lg shadow-purple-500/20">
+                <i class="fas fa-tags mr-2"></i> Gestionar Planes
+            </a>
         </div>
 
         <div class="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 shadow-xl overflow-x-auto">

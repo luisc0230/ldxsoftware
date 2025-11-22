@@ -8,6 +8,12 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^admin/cursos/editar/([0-9]+)$ admin/editar_curso.php?id=$1 [L,QSA]
 RewriteRule ^admin/temario$ admin/temario.php [L,QSA]
 RewriteRule ^admin/clases/editar/([0-9]+)$ admin/editar_clase.php?id=$1 [L,QSA]
+
+# Rutas para Planes
+RewriteRule ^admin/planes$ admin/planes.php [L,QSA]
+RewriteRule ^admin/planes/crear$ admin/editar_plan.php [L,QSA]
+RewriteRule ^admin/planes/editar/([0-9]+)$ admin/editar_plan.php?id=$1 [L,QSA]
+
 RewriteRule ^curso/([^/]+)/([^/]+)/([^/]+)/?$ clase.php?course_slug=$1&module_slug=$2&lesson_slug=$3 [L,QSA]
 RewriteRule ^curso/([^/]+)/?$ curso.php?slug=$1 [L,QSA]
 
