@@ -1,9 +1,20 @@
 <?php
 define('LDX_ACCESS', true);
+
+// Configuración primero para asegurar que las constantes estén disponibles
+require_once __DIR__ . '/config/config.php';
+
+// Luego los modelos y controladores
 require_once __DIR__ . '/app/controllers/AuthController.php';
 require_once __DIR__ . '/app/models/Curso.php';
 require_once __DIR__ . '/app/models/Suscripcion.php';
-require_once __DIR__ . '/config/config.php';
+
+// Habilitar reporte de errores si estamos en modo debug o si hay problemas
+if (isset($_GET['debug']) || (defined('DEBUG_MODE') && DEBUG_MODE)) {
+    ini_set('display_errors', 1);
+    ini_set('display_startup_errors', 1);
+    error_reporting(E_ALL);
+}
 
 $slug = $_GET['slug'] ?? '';
 
