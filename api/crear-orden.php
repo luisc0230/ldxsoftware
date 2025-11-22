@@ -30,6 +30,12 @@ if (!$precio || !$planId) {
 // Calcular monto en centavos y asegurarse que es entero
 $amount = (int)($precio * 100);
 
+// Preparar datos de cliente
+$nombreCompleto = trim($user['name']);
+$partesNombre = explode(' ', $nombreCompleto);
+$firstName = $partesNombre[0];
+$lastName = isset($partesNombre[1]) ? implode(' ', array_slice($partesNombre, 1)) : 'User';
+
 // Preparar datos para Culqi
 $orderData = [
     'amount' => $amount,
@@ -37,8 +43,8 @@ $orderData = [
     'description' => "Suscripción Plan ID: $planId ($tipoPago)",
     'order_number' => 'LDX-' . uniqid() . '-' . $user['id'], // Usar uniqid para evitar colisiones
     'client_details' => [
-        'first_name' => $user['name'],
-        'last_name' => 'User', // Google a veces no da apellido separado, usamos placeholder o lo que tengamos
+        'first_name' => $firstName,
+        'last_name' => $lastName,
         'email' => $user['email'],
         'phone_number' => '999999999' // Culqi requiere teléfono, usamos dummy si no tenemos
     ],
