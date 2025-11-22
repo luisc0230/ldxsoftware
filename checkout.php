@@ -126,18 +126,28 @@ $user = AuthController::getCurrentUser();
 
     <script>
         // Recuperar plan seleccionado desde PHP session
+        // Recuperar plan seleccionado desde GET o Session y guardar en Session
         <?php
-        $planId = $_SESSION['planSeleccionado'] ?? 1;
-        $tipoPago = $_SESSION['tipoPagoSeleccionado'] ?? 'mensual';
-        $precio = $_SESSION['precioSeleccionado'] ?? 29;
+        $planId = $_GET['plan'] ?? $_SESSION['planSeleccionado'] ?? 4;
+        $tipoPago = $_GET['tipo'] ?? $_SESSION['tipoPagoSeleccionado'] ?? 'mensual';
+        $precio = $_GET['precio'] ?? $_SESSION['precioSeleccionado'] ?? 5;
         
-        // Nombres de planes
+        // Guardar en sesión para que el controlador de pago los tenga disponibles
+        $_SESSION['planSeleccionado'] = $planId;
+        $_SESSION['tipoPagoSeleccionado'] = $tipoPago;
+        $_SESSION['precioSeleccionado'] = $precio;
+        
+        // Nombres de planes (Actualizado con nuevos planes)
         $planesNombres = [
             1 => 'Básico',
             2 => 'Profesional',
-            3 => 'Empresarial'
+            3 => 'Empresarial',
+            4 => 'Mensual',
+            5 => 'Trimestral',
+            6 => 'Anual',
+            7 => 'Lifetime'
         ];
-        $planNombre = $planesNombres[$planId] ?? 'Básico';
+        $planNombre = $planesNombres[$planId] ?? 'Plan Desconocido';
         ?>
         
         const planId = <?php echo $planId; ?>;
