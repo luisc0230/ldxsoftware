@@ -162,7 +162,7 @@ $temario = $data['temario'];
                 </div>
                 
                 <div class="prose prose-invert prose-blue max-w-none text-brand-gray">
-                    <p><?php echo nl2br(htmlspecialchars($clase['descripcion'] ?? 'Sin descripción disponible para esta clase.')); ?></p>
+                    <?php echo $clase['descripcion'] ?? '<p>Sin descripción disponible para esta clase.</p>'; ?>
                 </div>
             </div>
 

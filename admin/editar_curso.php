@@ -122,7 +122,12 @@ if (!$curso) {
 
     <div class="container mx-auto px-4 py-8">
         <div class="max-w-4xl mx-auto">
-            <h1 class="text-3xl font-bold text-white mb-8">Editar Curso: <?php echo htmlspecialchars($curso['titulo']); ?></h1>
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="text-3xl font-bold text-white">Editar Curso: <?php echo htmlspecialchars($curso['titulo']); ?></h1>
+                <a href="<?php echo url('admin/temario?curso_id=' . $curso['id']); ?>" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-colors">
+                    <i class="fas fa-list-ul mr-2"></i> Gestionar Temario
+                </a>
+            </div>
 
             <?php if ($message): ?>
                 <div class="bg-green-500/20 text-green-400 p-4 rounded-lg mb-6 border border-green-500/30">
