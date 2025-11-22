@@ -181,6 +181,45 @@ try {
                         </div>
                     </div>
 
+                    <!-- Panel de Administración (Solo para Admin) -->
+                    <?php if ($user['email'] === 'luisc023030@gmail.com'): ?>
+                    <div class="bg-gradient-to-br from-red-900/20 to-orange-900/20 rounded-2xl p-6 border border-red-500/30 mb-6">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="bg-red-500/20 p-3 rounded-lg">
+                                <i class="fas fa-user-shield text-red-400 text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-2xl font-bold text-white">Panel de Administración</h3>
+                                <p class="text-gray-400 text-sm">Acceso exclusivo de administrador</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <a href="<?php echo url('admin/cursos'); ?>" 
+                               class="flex items-center gap-4 bg-gray-800/50 hover:bg-red-900/20 rounded-lg p-4 transition-all group border border-gray-700 hover:border-red-500/30">
+                                <div class="bg-red-500/20 p-3 rounded-lg group-hover:bg-red-500/30 transition-all">
+                                    <i class="fas fa-graduation-cap text-red-400 text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-white font-semibold">Gestionar Cursos</p>
+                                    <p class="text-gray-400 text-sm">Agregar, editar o eliminar cursos</p>
+                                </div>
+                            </a>
+                            
+                            <a href="<?php echo url('admin/suscripciones'); ?>" 
+                               class="flex items-center gap-4 bg-gray-800/50 hover:bg-red-900/20 rounded-lg p-4 transition-all group border border-gray-700 hover:border-red-500/30">
+                                <div class="bg-orange-500/20 p-3 rounded-lg group-hover:bg-orange-500/30 transition-all">
+                                    <i class="fas fa-users-cog text-orange-400 text-xl"></i>
+                                </div>
+                                <div>
+                                    <p class="text-white font-semibold">Gestionar Suscripciones</p>
+                                    <p class="text-gray-400 text-sm">Ver y administrar usuarios</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+
                     <!-- Acciones Rápidas -->
                     <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-6 border border-gray-700">
                         <h3 class="text-2xl font-bold text-white mb-4">Acciones Rápidas</h3>
@@ -197,14 +236,14 @@ try {
                                 </div>
                             </a>
                             
-                            <a href="<?php echo BASE_URL; ?>#suscripciones" 
+                            <a href="<?php echo url('cursos'); ?>" 
                                class="flex items-center gap-4 bg-gray-800/50 hover:bg-gray-700/50 rounded-lg p-4 transition-all group">
                                 <div class="bg-blue-500/20 p-3 rounded-lg group-hover:bg-blue-500/30 transition-all">
-                                    <i class="fas fa-plus text-blue-400 text-xl"></i>
+                                    <i class="fas fa-play-circle text-blue-400 text-xl"></i>
                                 </div>
                                 <div>
-                                    <p class="text-white font-semibold">Nuevos Planes</p>
-                                    <p class="text-gray-400 text-sm">Explora más servicios</p>
+                                    <p class="text-white font-semibold">Ver Cursos</p>
+                                    <p class="text-gray-400 text-sm">Explora el contenido</p>
                                 </div>
                             </a>
                             
