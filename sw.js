@@ -7,10 +7,10 @@
 const CACHE_NAME = 'ldx-software-v1.0.0';
 const urlsToCache = [
     '/',
-    '/public/assets/css/custom.css',
-    '/public/assets/js/app.js',
-    '/public/assets/images/logo.png',
-    '/public/assets/images/logo-white.png',
+    '/assets/css/custom.css',
+    '/assets/js/app.js',
+    '/assets/images/logo.png',
+    '/assets/images/logo-white.png',
     'https://cdn.tailwindcss.com',
     'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap',
     'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css',
@@ -42,21 +42,21 @@ self.addEventListener('fetch', event => {
                 if (response) {
                     return response;
                 }
-                
+
                 return fetch(event.request).then(response => {
                     // Check if valid response
                     if (!response || response.status !== 200 || response.type !== 'basic') {
                         return response;
                     }
-                    
+
                     // Clone the response
                     const responseToCache = response.clone();
-                    
+
                     caches.open(CACHE_NAME)
                         .then(cache => {
                             cache.put(event.request, responseToCache);
                         });
-                    
+
                     return response;
                 });
             })
@@ -72,7 +72,7 @@ self.addEventListener('fetch', event => {
 // Activate event
 self.addEventListener('activate', event => {
     const cacheWhitelist = [CACHE_NAME];
-    
+
     event.waitUntil(
         caches.keys().then(cacheNames => {
             return Promise.all(
@@ -96,7 +96,7 @@ self.addEventListener('sync', event => {
 async function syncContactForm() {
     // Handle offline form submissions
     const formData = await getStoredFormData();
-    
+
     if (formData.length > 0) {
         for (const data of formData) {
             try {
@@ -107,7 +107,7 @@ async function syncContactForm() {
                         'X-Requested-With': 'XMLHttpRequest'
                     }
                 });
-                
+
                 // Remove from storage after successful submission
                 await removeStoredFormData(data.id);
             } catch (error) {

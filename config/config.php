@@ -115,7 +115,7 @@ function url($path = '') {
  * Generate asset URL
  */
 function asset($path) {
-    return BASE_URL . 'public/assets/' . ltrim($path, '/');
+    return BASE_URL . 'assets/' . ltrim($path, '/');
 }
 
 /**
