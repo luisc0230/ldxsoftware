@@ -1,4 +1,5 @@
 <?php
+define('LDX_ACCESS', true);
 require_once __DIR__ . '/app/controllers/AuthController.php';
 require_once __DIR__ . '/app/models/Curso.php';
 require_once __DIR__ . '/app/models/Suscripcion.php';

@@ -98,64 +98,132 @@ if (empty($cursos)) {
 
             <!-- Grid de Cursos -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <?php foreach ($cursos as $curso): ?>
-                    <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden border border-gray-700 hover:border-blue-500/50 transition-all duration-300 group flex flex-col h-full">
-                        <!-- Imagen -->
-                        <div class="relative h-48 overflow-hidden">
-                            <div class="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent z-10"></div>
+                <?php 
+                // Verificar suscripción activa
+                require_once __DIR__ . '/app/models/Suscripcion.php';
+                $hasActiveSubscription = false;
+                if ($isLoggedIn && $user) {
+                    $suscripcionModel = new Suscripcion();
+                    $suscripciones = $suscripcionModel->getSuscripcionesActivas($user['id']);
+                    if (!empty($suscripciones)) {
+                        $hasActiveSubscription = true;
+                    }
+                }
+
+                foreach ($cursos as $curso): 
+                    // Determinar URL del curso (usar slug si existe, sino ID)
+                    $cursoSlug = !empty($curso['slug']) ? $curso['slug'] : $curso['id'];
+                    $cursoUrl = url('curso/' . $cursoSlug);
+                ?>
+                    <?php if ($hasActiveSubscription): ?>
+                        <!-- Diseño Premium (Estilo Streaming) -->
+                        <div class="relative group rounded-xl overflow-hidden aspect-video border border-gray-800 hover:border-blue-500/50 transition-all duration-300 shadow-lg hover:shadow-blue-500/20">
+                            <!-- Imagen de fondo -->
                             <img src="<?php echo htmlspecialchars($curso['imagen_url']); ?>" 
                                  alt="<?php echo htmlspecialchars($curso['titulo']); ?>"
-                                 class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
-                                 onerror="this.src='<?php echo asset('images/logo.png'); ?>'"> <!-- Fallback image -->
+                                 class="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500"
+                                 onerror="this.src='<?php echo asset('images/logo.png'); ?>'">
                             
-                            <?php if ($curso['es_gratuito']): ?>
-                                <span class="absolute top-4 right-4 z-20 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                                    GRATIS
-                                </span>
-                            <?php else: ?>
-                                <span class="absolute top-4 right-4 z-20 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
-                                    PREMIUM
-                                </span>
-                            <?php endif; ?>
-                        </div>
-                        
-                        <!-- Contenido -->
-                        <div class="p-6 flex-grow flex flex-col">
-                            <h3 class="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">
-                                <?php echo htmlspecialchars($curso['titulo']); ?>
-                            </h3>
-                            <p class="text-gray-400 text-sm mb-4 flex-grow">
-                                <?php echo htmlspecialchars($curso['descripcion']); ?>
-                            </p>
+                            <!-- Overlay Gradiente -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-90 group-hover:opacity-80 transition-opacity"></div>
                             
-                            <div class="flex items-center justify-between mt-auto pt-4 border-t border-gray-700">
-                                <?php if ($curso['es_gratuito']): ?>
-                                    <span class="text-green-400 font-bold text-lg">Gratis</span>
-                                <?php else: ?>
-                                    <span class="text-white font-bold text-lg">S/ <?php echo number_format($curso['precio'], 2); ?></span>
-                                <?php endif; ?>
+                            <!-- Contenido Superpuesto -->
+                            <div class="absolute inset-0 p-6 flex flex-col justify-end">
+                                <!-- Badges -->
+                                <div class="absolute top-4 right-4 flex gap-2">
+                                    <?php if (!empty($curso['nivel'])): ?>
+                                    <span class="bg-black/60 backdrop-blur-md border border-white/10 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">
+                                        <?php echo htmlspecialchars($curso['nivel']); ?>
+                                    </span>
+                                    <?php endif; ?>
+                                </div>
+
+                                <!-- Título -->
+                                <h3 class="text-2xl font-bold text-white mb-2 leading-tight group-hover:text-blue-400 transition-colors">
+                                    <?php echo htmlspecialchars($curso['titulo']); ?>
+                                </h3>
                                 
-                                <a href="<?php echo url('curso/' . $curso['id']); ?>" class="text-blue-400 hover:text-white text-sm font-semibold transition-colors">
-                                    Ver Detalles <i class="fas fa-arrow-right ml-1"></i>
+                                <!-- Info Meta -->
+                                <div class="flex items-center gap-4 text-gray-300 text-sm mb-4">
+                                    <?php if (!empty($curso['duracion_total'])): ?>
+                                    <span class="flex items-center gap-1.5">
+                                        <i class="far fa-clock text-blue-400"></i> <?php echo htmlspecialchars($curso['duracion_total']); ?>
+                                    </span>
+                                    <?php endif; ?>
+                                    <?php if (!empty($curso['total_clases'])): ?>
+                                    <span class="flex items-center gap-1.5">
+                                        <i class="fas fa-play-circle text-blue-400"></i> <?php echo $curso['total_clases']; ?> clases
+                                    </span>
+                                    <?php endif; ?>
+                                </div>
+
+                                <!-- Botón de Acción -->
+                                <a href="<?php echo $cursoUrl; ?>" class="w-full bg-white text-black hover:bg-blue-500 hover:text-white font-bold py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 text-sm">
+                                    <i class="fas fa-play"></i> Ir al curso
                                 </a>
                             </div>
                         </div>
-                        
-                        <!-- Controles de Admin -->
-                        <?php if ($isAdmin): ?>
-                        <div class="bg-gray-900/90 p-3 flex justify-between items-center border-t border-gray-700">
-                            <span class="text-xs text-gray-500">ID: <?php echo $curso['id']; ?></span>
-                            <div class="flex gap-2">
-                                <button class="text-blue-400 hover:text-blue-300 p-2" title="Editar">
-                                    <i class="fas fa-edit"></i>
-                                </button>
-                                <button class="text-red-400 hover:text-red-300 p-2" title="Eliminar">
-                                    <i class="fas fa-trash"></i>
-                                </button>
+
+                    <?php else: ?>
+                        <!-- Diseño Estándar (Venta) -->
+                        <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl overflow-hidden border border-gray-700 hover:border-blue-500/50 transition-all duration-300 group flex flex-col h-full">
+                            <!-- Imagen -->
+                            <div class="relative h-48 overflow-hidden">
+                                <div class="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent z-10"></div>
+                                <img src="<?php echo htmlspecialchars($curso['imagen_url']); ?>" 
+                                     alt="<?php echo htmlspecialchars($curso['titulo']); ?>"
+                                     class="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-500"
+                                     onerror="this.src='<?php echo asset('images/logo.png'); ?>'">
+                                
+                                <?php if ($curso['es_gratuito']): ?>
+                                    <span class="absolute top-4 right-4 z-20 bg-green-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                                        GRATIS
+                                    </span>
+                                <?php else: ?>
+                                    <span class="absolute top-4 right-4 z-20 bg-blue-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+                                        PREMIUM
+                                    </span>
+                                <?php endif; ?>
                             </div>
+                            
+                            <!-- Contenido -->
+                            <div class="p-6 flex-grow flex flex-col">
+                                <h3 class="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">
+                                    <?php echo htmlspecialchars($curso['titulo']); ?>
+                                </h3>
+                                <p class="text-gray-400 text-sm mb-4 flex-grow line-clamp-3">
+                                    <?php echo htmlspecialchars($curso['descripcion']); ?>
+                                </p>
+                                
+                                <div class="flex items-center justify-between mt-auto pt-4 border-t border-gray-700">
+                                    <?php if ($curso['es_gratuito']): ?>
+                                        <span class="text-green-400 font-bold text-lg">Gratis</span>
+                                    <?php else: ?>
+                                        <span class="text-white font-bold text-lg">S/ <?php echo number_format($curso['precio'], 2); ?></span>
+                                    <?php endif; ?>
+                                    
+                                    <a href="<?php echo $cursoUrl; ?>" class="text-blue-400 hover:text-white text-sm font-semibold transition-colors">
+                                        Ver Detalles <i class="fas fa-arrow-right ml-1"></i>
+                                    </a>
+                                </div>
+                            </div>
+                            
+                            <!-- Controles de Admin -->
+                            <?php if ($isAdmin): ?>
+                            <div class="bg-gray-900/90 p-3 flex justify-between items-center border-t border-gray-700">
+                                <span class="text-xs text-gray-500">ID: <?php echo $curso['id']; ?></span>
+                                <div class="flex gap-2">
+                                    <button class="text-blue-400 hover:text-blue-300 p-2" title="Editar">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="text-red-400 hover:text-red-300 p-2" title="Eliminar">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <?php endif; ?>
                         </div>
-                        <?php endif; ?>
-                    </div>
+                    <?php endif; ?>
                 <?php endforeach; ?>
             </div>
             
