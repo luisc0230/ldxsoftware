@@ -35,14 +35,14 @@ $orderData = [
     'amount' => $amount,
     'currency_code' => 'PEN',
     'description' => "Suscripción Plan ID: $planId ($tipoPago)",
-    'order_number' => 'LDX-' . time() . '-' . $user['id'],
+    'order_number' => 'LDX-' . uniqid() . '-' . $user['id'], // Usar uniqid para evitar colisiones
     'client_details' => [
         'first_name' => $user['name'],
         'last_name' => 'User', // Google a veces no da apellido separado, usamos placeholder o lo que tengamos
         'email' => $user['email'],
         'phone_number' => '999999999' // Culqi requiere teléfono, usamos dummy si no tenemos
     ],
-    'expiration_date' => time() + (24 * 60 * 60) // Expira en 24 horas
+    // 'expiration_date' => time() + (24 * 60 * 60) // Comentado para evitar problemas de zona horaria
 ];
 
 // Llamada a la API de Culqi
