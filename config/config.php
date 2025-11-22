@@ -39,8 +39,8 @@ define('SMTP_FROM_EMAIL', 'contacto@ldxsoftware.com.pe');
 define('SMTP_FROM_NAME', 'LDX Software');
 
 // Culqi Configuration (Payment Gateway)
-define('CULQI_PUBLIC_KEY', 'pk_live_U96t41XTSDn28JCt');
-define('CULQI_SECRET_KEY', 'sk_live_lfGtwcEvVxwDPFPl');
+define('CULQI_PUBLIC_KEY', 'pk_test_pFFwfwNWeARhXrgN');
+define('CULQI_SECRET_KEY', 'sk_test_1JdA4a8tJsBlrCpG');
 define('CULQI_API_URL', 'https://api.culqi.com/v2/');
 
 // Google OAuth Configuration
