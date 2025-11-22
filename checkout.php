@@ -195,12 +195,24 @@ $user = AuthController::getCurrentUser();
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // 2. Configurar Culqi con la orden real
+                    console.log("Nueva orden creada:", data.order_id); // Debug
+                    
+                    // 2. Re-inicializar configuración de Culqi con la NUEVA orden
                     Culqi.settings({
                         title: 'LDX Software',
                         currency: 'PEN',
                         amount: parseInt(precio) * 100,
-                        order: data.order_id // ID de orden real generado por Culqi
+                        order: data.order_id, // ID fresco del backend
+                        xculqirsaid: '', // Si usas cifrado, va aquí
+                        rsapublickey: '' // Si usas cifrado, va aquí
+                    });
+                    
+                    // Opciones también se pueden re-setear por seguridad
+                    Culqi.options({
+                        lang: 'auto',
+                        installments: false,
+                        paymentMethods: paymentMethods,
+                        paymentMethodsSort: Object.keys(paymentMethods)
                     });
                     
                     // 3. Abrir Checkout
