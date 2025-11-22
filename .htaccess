@@ -1,49 +1,9 @@
-# LDX Software - Production .htaccess
+RewriteEngine On
 
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteBase /
+# Si la petición es para un archivo o directorio que existe, sírvelo directamente
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
 
-    # Force HTTPS
-    RewriteCond %{HTTPS} off
-    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-
-    # Prevent access to sensitive directories
-    RewriteRule ^app/.*$ - [F,L]
-    RewriteRule ^config/.*$ - [F,L]
-    RewriteRule ^vendor/.*$ - [F,L]
-    RewriteRule ^\.git/.*$ - [F,L]
-
-    # Allow auth routes to their respective files
-    RewriteRule ^auth/google/?$ auth/google/index.php [L]
-    RewriteRule ^auth/google/callback$ auth/google/callback.php [QSA,L]
-    RewriteRule ^auth/logout$ auth/logout.php [L]
-    
-    # Allow direct access to test and check files (for debugging)
-    RewriteRule ^test-db\.php$ test-db.php [L]
-    RewriteRule ^diagnostico-session\.php$ diagnostico-session.php [L]
-    RewriteRule ^fix-session\.php$ fix-session.php [L]
-    RewriteRule ^auth/check-config\.php$ auth/check-config.php [L]
-
-    # Route all requests through index.php (except existing files)
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)$ index.php [QSA,L]
-</IfModule>
-
-# Disable directory browsing
-Options -Indexes
-
-# Enable compression
-<IfModule mod_deflate.c>
-    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
-</IfModule>
-
-# Browser caching
-<IfModule mod_expires.c>
-    ExpiresActive On
-    ExpiresByType image/jpeg "access plus 1 year"
-    ExpiresByType image/png "access plus 1 year"
-    ExpiresByType text/css "access plus 1 month"
-    ExpiresByType application/javascript "access plus 1 month"
-</IfModule>
+# Si existe el archivo con extensión .php, reescribe la URL
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^(.*)$ $1.php [L]

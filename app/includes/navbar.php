@@ -14,7 +14,7 @@ $user = AuthController::getCurrentUser();
         <!-- Logo Section -->
         <div class="md:flex-grow md:basis-0 flex justify-start">
             <a href="<?php echo BASE_URL; ?>" class="ml-4 flex items-center gap-2.5 font-bold transition-transform duration-300 hover:scale-110" title="Ir a la página principal" aria-label="Ir a la página principal">
-                <img src="<?php echo asset('images/logo.png'); ?>" alt="LDX Software" class="h-8 w-auto">
+                <img src="<?php echo BASE_URL; ?>assets/images/logo.png" alt="LDX Software" class="h-8 w-auto">
             </a>
         </div>
 
@@ -43,6 +43,12 @@ $user = AuthController::getCurrentUser();
                     <a href="<?php echo BASE_URL; ?>#suscripciones" class="flex items-center md:w-auto justify-center gap-2 md:px-4 md:py-2 hover:bg-white/5 md:rounded-2xl border border-transparent hover:border-white/10 transition-all min-h-[50px] md:text-base px-5 py-4 text-xl duration-300 w-full">
                         <i class="fas fa-credit-card" aria-hidden="true"></i>
                         Suscripciones
+                    </a>
+                </li>
+                <li class="flex justify-center w-full first:mt-5 md:first:mt-0 md:block md:w-auto">
+                    <a href="<?php echo url('cursos'); ?>" class="flex items-center md:w-auto justify-center gap-2 md:px-4 md:py-2 hover:bg-white/5 md:rounded-2xl border border-transparent hover:border-white/10 transition-all min-h-[50px] md:text-base px-5 py-4 text-xl duration-300 w-full">
+                        <i class="fas fa-graduation-cap" aria-hidden="true"></i>
+                        Cursos
                     </a>
                 </li>
                 <li class="flex justify-center w-full first:mt-5 md:first:mt-0 md:block md:w-auto">
