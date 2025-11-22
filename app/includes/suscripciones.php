@@ -4,8 +4,29 @@ require_once __DIR__ . '/../../app/models/Database.php';
 
 try {
     $db = Database::getInstance()->getConnection();
-    $stmt = $db->query("SELECT * FROM planes WHERE estado = 'activo' ORDER BY orden ASC");
+    
+    // Verificar si existen las nuevas columnas
+    $checkColumns = $db->query("SHOW COLUMNS FROM planes LIKE 'precio_trimestral'");
+    $hasNewColumns = $checkColumns->rowCount() > 0;
+    
+    if ($hasNewColumns) {
+        $stmt = $db->query("SELECT * FROM planes WHERE estado = 'activo' ORDER BY orden ASC");
+    } else {
+        $stmt = $db->query("SELECT * FROM planes WHERE estado = 'activo' ORDER BY id ASC");
+    }
+    
     $planes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Si no hay nuevas columnas, agregar valores por defecto
+    if (!$hasNewColumns && !empty($planes)) {
+        foreach ($planes as &$plan) {
+            $plan['precio_trimestral'] = 0;
+            $plan['precio_lifetime'] = 0;
+            $plan['descuento_porcentaje'] = 50; // Descuento por defecto
+            $plan['es_recomendado'] = ($plan['id'] == 2) ? 1 : 0; // El segundo plan es recomendado
+            $plan['orden'] = $plan['id'];
+        }
+    }
 } catch (Exception $e) {
     error_log("Error al cargar planes: " . $e->getMessage());
     $planes = [];
