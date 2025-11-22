@@ -377,7 +377,7 @@ try {
 <script>
 function iniciarSuscripcion(planId, precio, tipo) {
     // Verificar si el usuario está autenticado
-    <?php if (!isset($_SESSION['user_id'])): ?>
+    <?php if (!isset($_SESSION['user'])): ?>
         // Redirigir al login de Google
         window.location.href = '<?php echo url('auth/google'); ?>';
         return;
