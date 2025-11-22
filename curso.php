@@ -55,7 +55,7 @@ if (!empty($contenido) && !empty($contenido[0]['clases'])) {
     $firstLessonUrl = url("curso/{$courseSlug}/{$contenido[0]['slug']}/{$contenido[0]['clases'][0]['slug']}");
 }
 
-$ctaLink = $hasActiveSubscription ? $firstLessonUrl : url('suscripciones');
+$ctaLink = $hasActiveSubscription ? $firstLessonUrl : BASE_URL . '#suscripciones';
 $ctaText = $hasActiveSubscription ? 'Empezar curso' : 'Suscribirse para acceder';
 
 // Parse JSON fields
@@ -198,7 +198,7 @@ if (!is_array($learningGoals)) $learningGoals = [];
                                 <?php foreach ($modulo['clases'] as $clase): 
                                     $claseUrl = $hasActiveSubscription 
                                         ? url("curso/{$courseSlug}/{$modulo['slug']}/{$clase['slug']}")
-                                        : url('suscripciones');
+                                        : BASE_URL . '#suscripciones';
                                 ?>
                                 <li>
                                     <a href="<?php echo $claseUrl; ?>" class="flex items-center gap-4 px-6 py-3 hover:bg-white/5 transition-colors group">
