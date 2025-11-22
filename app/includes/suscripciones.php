@@ -62,31 +62,53 @@ try {
 ?>
 
 <!-- Sección de Suscripciones -->
-<section id="suscripciones" class="py-20 bg-gradient-to-b from-black via-gray-900 to-black relative overflow-hidden">
-    <div class="container mx-auto px-4">
+<section id="suscripciones" class="py-12 bg-black text-white relative overflow-hidden">
+    <!-- Separator Line -->
+    <div class="w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent mb-20"></div>
+    
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-10">
+        <div class="absolute top-20 left-20 w-72 h-72 bg-white rounded-full blur-3xl animate-pulse"></div>
+        <div class="absolute bottom-20 right-20 w-96 h-96 bg-white rounded-full blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
+        <div class="absolute top-1/2 left-1/4 w-48 h-48 bg-white rounded-full blur-2xl animate-pulse" style="animation-delay: 1s;"></div>
+    </div>
+    
+    <!-- Grid Pattern -->
+    <div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 50px 50px;"></div>
+    
+    <div class="max-w-7xl mx-auto px-4 relative z-10">
         
+        <!-- Section Header -->
+        <div class="text-center mb-12 md:mb-16">
+            <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 md:mb-6 leading-tight">
+                Planes de <span class="text-white">Suscripción</span>
+            </h2>
+            <p class="text-lg md:text-xl lg:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+                Elige el plan perfecto para tu aprendizaje y desarrollo profesional
+            </p>
+        </div>
+
         <!-- Banner de Descuento -->
         <div class="max-w-4xl mx-auto mb-12">
-            <div class="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 text-center relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full blur-3xl"></div>
-                <div class="absolute bottom-0 left-0 w-32 h-32 bg-white/10 rounded-full blur-3xl"></div>
+            <div class="bg-transparent border border-white/20 rounded-2xl p-6 md:p-8 text-center relative overflow-hidden backdrop-blur-sm">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full blur-3xl"></div>
+                <div class="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full blur-3xl"></div>
                 <div class="relative z-10">
-                    <span class="inline-block bg-yellow-400 text-black text-sm font-bold px-4 py-1 rounded-full mb-4">
-                        EXCLUSIVO
+                    <span class="inline-block bg-white/10 text-white border border-white/30 text-sm font-bold px-4 py-1 rounded-full mb-4">
+                        OFERTA ESPECIAL
                     </span>
-                    <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">
-                        Disfruta de un 50% de descuento
-                    </h2>
-                    <p class="text-white/90 text-lg">
-                        por tiempo limitado en tu primera suscripción
+                    <h3 class="text-2xl md:text-3xl font-bold text-white mb-2">
+                        50% de descuento en tu primera suscripción
+                    </h3>
+                    <p class="text-gray-300 text-base md:text-lg">
+                        Aprovecha esta oferta por tiempo limitado
                     </p>
                 </div>
             </div>
         </div>
 
         <!-- Planes de Suscripción -->
-        <div class="max-w-7xl mx-auto">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 
                 <?php foreach ($planes as $plan): ?>
                     <?php
@@ -239,7 +261,6 @@ try {
                     </div>
                 <?php endforeach; ?>
                 
-            </div>
         </div>
 
         <!-- Tabla Comparativa -->
