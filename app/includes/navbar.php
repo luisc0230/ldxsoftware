@@ -126,9 +126,18 @@ $user = AuthController::getCurrentUser();
 </header>
 
 <!-- Login Modal -->
-<dialog id="loginModal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[99999999] text-white p-8 pt-20 w-full max-w-sm bg-gray-900 border border-gray-700 rounded-xl shadow-xl backdrop:bg-black/50 backdrop:backdrop-blur-sm">
+<dialog id="loginModal" class="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-[99999999] text-white p-8 pt-20 w-full max-w-sm bg-black border border-white/20 rounded-xl shadow-xl backdrop:bg-black/50 backdrop:backdrop-blur-sm overflow-hidden">
+    <!-- Background Pattern -->
+    <div class="absolute inset-0 opacity-10 pointer-events-none">
+        <div class="absolute top-10 left-10 w-32 h-32 bg-white rounded-full blur-3xl animate-pulse"></div>
+        <div class="absolute bottom-10 right-10 w-40 h-40 bg-white rounded-full blur-3xl animate-pulse" style="animation-delay: 2s;"></div>
+    </div>
+    
+    <!-- Grid Pattern -->
+    <div class="absolute inset-0 opacity-5 pointer-events-none" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 50px 50px;"></div>
+    
     <form method="dialog">
-        <button type="button" onclick="closeLoginModal()" title="Cerrar modal" aria-label="Cerrar modal" class="absolute p-3 rounded-xl bg-black/20 border border-gray-700 top-5 right-5 hover:bg-gray-800 transition-colors text-white">
+        <button type="button" onclick="closeLoginModal()" title="Cerrar modal" aria-label="Cerrar modal" class="absolute p-3 rounded-xl bg-black/20 border border-white/20 top-5 right-5 hover:bg-white/5 transition-colors text-white z-10">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M18 6 6 18"></path>
                 <path d="m6 6 12 12"></path>
@@ -136,10 +145,10 @@ $user = AuthController::getCurrentUser();
         </button>
     </form>
     
-    <div class="px-3 pb-6 w-full">
+    <div class="px-3 pb-6 w-full relative z-10">
         <div class="text-center mb-6">
-            <div class="size-12 mx-auto mb-3 bg-gradient-to-br from-white to-neutral-200 rounded-lg flex items-center justify-center">
-                <img alt="LDX Software logo" class="size-8" src="<?php echo asset('images/logo.png'); ?>">
+            <div class="mx-auto mb-4">
+                <img alt="LDX Software logo" class="w-20 h-20 mx-auto" src="<?php echo asset('images/logo.png'); ?>">
             </div>
             <h2 class="text-xl font-semibold text-white mb-1">Iniciar sesión</h2>
             <p class="text-sm text-gray-400">Accede a la academia de LDX Software</p>
