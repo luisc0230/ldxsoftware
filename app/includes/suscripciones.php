@@ -1,4 +1,8 @@
 <?php
+// Debug: Activar reporte de errores
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 // Obtener planes de la base de datos
 require_once __DIR__ . '/../../app/models/Database.php';
 
@@ -10,12 +14,16 @@ try {
     $hasNewColumns = $checkColumns->rowCount() > 0;
     
     if ($hasNewColumns) {
-        $stmt = $db->query("SELECT * FROM planes WHERE estado = 'activo' ORDER BY orden ASC");
+        // Solo mostrar los planes nuevos de la academia (IDs 4-7)
+        $stmt = $db->query("SELECT * FROM planes WHERE estado = 'activo' AND id >= 4 ORDER BY orden ASC");
     } else {
         $stmt = $db->query("SELECT * FROM planes WHERE estado = 'activo' ORDER BY id ASC");
     }
     
     $planes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Debug: Verificar cuántos planes se obtuvieron
+    error_log("Planes obtenidos: " . count($planes));
     
     // Si no hay nuevas columnas, agregar valores por defecto
     if (!$hasNewColumns && !empty($planes)) {
