@@ -79,34 +79,36 @@ $temario = $data['temario'];
             max-height: 1000px;
         }
         .rotate-90 { transform: rotate(90deg); }
+        
+        html { scroll-behavior: smooth; }
+        
+        /* Hamburger Animation */
+        .hamburger-line {
+            transform-origin: center;
+        }
+        
+        button[aria-expanded="false"] .hamburger-line:first-child {
+            transform: translateY(0) rotate(0deg);
+        }
+        
+        button[aria-expanded="false"] .hamburger-line:last-child {
+            transform: translateY(0) rotate(0deg);
+        }
+        
+        button[aria-expanded="true"] .hamburger-line:first-child {
+            transform: translateY(5px) rotate(45deg);
+        }
+        
+        button[aria-expanded="true"] .hamburger-line:last-child {
+            transform: translateY(-5px) rotate(-45deg);
+        }
     </style>
 </head>
-<body class="bg-[#020617] text-white min-h-screen font-sans flex flex-col">
+<body class="bg-black text-white min-h-screen font-sans flex flex-col">
 
-    <!-- Navbar Simplificado -->
-    <nav class="border-b border-line bg-[#020617]/80 backdrop-blur-md sticky top-0 z-50">
-        <div class="max-w-[1600px] mx-auto px-4 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-4 overflow-hidden">
-                <a href="<?php echo url('curso/' . $curso['slug']); ?>" class="flex-shrink-0 hover:opacity-80 transition-opacity">
-                    <i class="fas fa-arrow-left text-brand-gray mr-2"></i>
-                    <span class="font-bold hidden md:inline">Volver al curso</span>
-                </a>
-                <div class="h-6 w-px bg-line mx-2 hidden md:block"></div>
-                <h1 class="text-sm md:text-base font-medium truncate text-brand-gray">
-                    <span class="text-white"><?php echo htmlspecialchars($curso['titulo']); ?></span>
-                    <span class="mx-2">/</span>
-                    <span class="text-brand-blue"><?php echo htmlspecialchars($clase['titulo']); ?></span>
-                </h1>
-            </div>
-            
-            <!-- User Menu (Simplified) -->
-            <div class="flex items-center gap-4">
-                <a href="<?php echo url('mis-suscripciones'); ?>" class="text-sm text-brand-gray hover:text-white transition-colors">Mi Cuenta</a>
-            </div>
-        </div>
-    </nav>
+    <?php include __DIR__ . '/app/includes/navbar.php'; ?>
 
-    <main class="flex-grow flex flex-col lg:flex-row max-w-[1600px] mx-auto w-full">
+    <main class="flex-grow flex flex-col lg:flex-row max-w-[1600px] mx-auto w-full mt-20">
         
         <!-- Video Content Area -->
         <div class="flex-grow p-4 lg:p-6 lg:pr-8 min-w-0">
